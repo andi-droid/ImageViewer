@@ -172,7 +172,9 @@ classdef FilePickerFigure < BaseFigure
                 
                 datestring = o.compositor.imageDirectory(end-22:end);
                 datestringreduced = datestring(end-9:end);
-                path = [o.compositor.camera.protocolpath datestring '/' datestringreduced '_' o.compositor.currentabsorptionimage(14:17) '_t_proto.dat'];
+                %path = [o.compositor.camera.protocolpath datestring '/' datestringreduced '_' o.compositor.currentabsorptionimage(14:17) '_t_proto.dat'];
+                path = [o.compositor.camera.protocolpath datestring '\Protocol-' datestringreduced '_' o.compositor.currentabsorptionimage(14:17) '.xml' ]; % Lithium string 
+                %disp(path); 
                 o.compositor.currentprotocol = path;
                 
                 switchroi = false;

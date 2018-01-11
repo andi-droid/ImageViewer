@@ -169,7 +169,7 @@ classdef AnalysisFigure < BaseFigure
                 indexvariables = o.compositor.indexvariables;
                 for i = 1:numel(o.compositor.selectedIDs)
                     % ATTENTION waitfromimg added manually
-                    o.compositor.xdataanalysis(i) = o.compositor.protocolpackage{1,i}.p.VariableValue{indexvariables,1}+.25;
+                    o.compositor.xdataanalysis(i) = o.compositor.protocolpackage{1,i}.p.VariableValue{indexvariables,1};
                 end
                 o.compositor.analysis_xlab = o.compositor.protocolpackage{1,1}.p.VariableName{indexvariables,1};
                 

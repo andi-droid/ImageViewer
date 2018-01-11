@@ -208,8 +208,8 @@ classdef Camera < handle
                 o.Atomfaktor = (o.PixSize.^2/o.magnification.^2) .* 2 .* pi .* (1+ 4.*(o.Detuning.^2/o.Gamma.^2)) ./ (3.*o.Lambda.^2);
                 
             elseif strcmp(ID,'2') % Pixelfly QE / Parameter anpassen!
-                o.ISat = ISat
-                o.E_Photon = E_Photon
+                o.ISat = ISat;
+                o.E_Photon = E_Photon;
                 o.PixSize = 6.45E-6; % Pixel Size in m
                 o.magnification   = 300/150; %; % 4f image: f1 = 150 mm, f2 = 300 mm
                 o.C_F = 3.8; % A/D conversion factor
