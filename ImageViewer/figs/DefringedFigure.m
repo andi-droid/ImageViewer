@@ -237,7 +237,6 @@ classdef DefringedFigure < BaseFigure
         function update_clims(o)
             if o.useQuantileScale
                 o.clims=o.imageSet.get_quantile_scale_indv_shots(o.pQuantile);
-                o.clims=[-0.5,0.7];
             end
             set(o.axes, 'CLim', o.clims)
         end

@@ -73,7 +73,7 @@ classdef FitControlFigure < BaseFigure
             if strcmp(o.fitFctName,'Gauss')
                 options = optimset('Display','off');
                 %
-                o.ydata = o.compositor.ydataanalysis'; %'
+                o.ydata = o.compositor.ydataanalysis; %';
                 o.xdata = o.compositor.xdataanalysis;
                 %
                 
@@ -103,9 +103,8 @@ classdef FitControlFigure < BaseFigure
                 else
                     o.startparams = newFitParams;
                     o.lowerbound = newlowerbound;
-                    o.upperbound = newupperbound;
+                    o.lowerbound = newupperbound;
                     
-                   
                 end
                 
                 %
@@ -113,7 +112,8 @@ classdef FitControlFigure < BaseFigure
                 
                 o.fitdata = gfit;
                 xdata = unique(o.xdata);
-                o.compositor.analysisplotfitdatax = xdata(1):0.00001:xdata(end);
+                %o.compositor.analysisplotfitdatax = xdata(1):0.00001:xdata(end);
+                o.compositor.analysisplotfitdatax = linspace(xdata(1),xdata(end),1000);
                 o.compositor.analysisplotfitdatay = o.fitFct(o.fitdata,o.compositor.analysisplotfitdatax);
                 
                 
@@ -155,7 +155,7 @@ classdef FitControlFigure < BaseFigure
                 else
                     o.startparams = newFitParams;
                     o.lowerbound = newlowerbound;
-                    o.upperbound = newupperbound;
+                    o.lowerbound = newupperbound;
                 end
                 %
                 [gfit,~] = lsqcurvefit(o.fitFct, o.startparams,o.xdata(1:end),o.ydata(1:end),o.lowerbound,o.upperbound,options);
@@ -164,7 +164,8 @@ classdef FitControlFigure < BaseFigure
                 
                 
                 xdata = unique(o.xdata);
-                o.compositor.analysisplotfitdatax = xdata(1):0.00001:xdata(end);
+                o.compositor.analysisplotfitdatax = linspace(xdata(1),xdata(end),1000);
+                %o.compositor.analysisplotfitdatax = xdata(1):0.001:xdata(end);
                 o.compositor.analysisplotfitdatay = o.fitFct(o.fitdata,o.compositor.analysisplotfitdatax);
                 
                 o.onUpdateFitResults();
@@ -206,7 +207,7 @@ classdef FitControlFigure < BaseFigure
                 else
                     o.startparams = newFitParams;
                     o.lowerbound = newlowerbound;
-                    o.upperbound = newupperbound;
+                    o.lowerbound = newupperbound;
                 end
                 %
                 [gfit,~] = lsqcurvefit(o.fitFct, o.startparams,o.xdata(1:end),o.ydata(1:end),o.lowerbound,o.upperbound,options);
@@ -215,7 +216,8 @@ classdef FitControlFigure < BaseFigure
                 
                 
                 xdata = unique(o.xdata);
-                o.compositor.analysisplotfitdatax = xdata(1):0.00001:xdata(end);
+                %o.compositor.analysisplotfitdatax = xdata(1):0.00001:xdata(end);
+                o.compositor.analysisplotfitdatax = linspace(xdata(1),xdata(end),1000);
                 o.compositor.analysisplotfitdatay = o.fitFct(o.fitdata,o.compositor.analysisplotfitdatax);
                 o.onUpdateFitResults();
                 notify(o.compositor, 'updateAnalysisFitResults');
@@ -297,6 +299,11 @@ classdef FitControlFigure < BaseFigure
         
         
         function onClearFit(o,hsource,data)
+                o.compositor.analysisplotfitdatax = [];
+                o.compositor.analysisplotfitdatay = [];
+                
+                o.onUpdateFitResults();
+                notify(o.compositor, 'updateAnalysisFitResults');
             
         end
         

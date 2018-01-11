@@ -1,7 +1,7 @@
 classdef HistoryFigure < BaseFigure
     properties
         % GUI elements
-        checkboxfitorcount
+        togglefitorcount
         clearbtn
         popupanalysis
         
@@ -9,7 +9,10 @@ classdef HistoryFigure < BaseFigure
         integratedOD
         widthx
         widthy
+        centerx
+        centery
         xaxisdata
+        
         
         % Plots
         plot2
@@ -23,10 +26,6 @@ classdef HistoryFigure < BaseFigure
             o.windowTitle = mfilename('class');
         end
         
-        function setAnalysisMethod(o,hSource,callbackdata)
-            o.onReplot();
-        end
-        
         function onClearBtnPush(o,hsource,data)
             notify(o.compositor,'clearPlot');
         end
@@ -34,12 +33,13 @@ classdef HistoryFigure < BaseFigure
         
         function onClearPlot(o,hsource,data)
             o.compositor.atomnumberhistory = [];
-            o.compositor.historyxdata = [];
             o.compositor.widthhistoryx = [];
             o.compositor.widthhistoryy = [];
+            o.compositor.oscillationx = [];
+            o.compositor.oscillationy = [];
+            o.compositor.historyxdata = [];
             delete(o.plot);
             delete(o.plot2);
-
             o.onReplot();
         end
         
@@ -55,42 +55,54 @@ classdef HistoryFigure < BaseFigure
             if o.compositor.fitorcount
                 
                 o.compositor.atomnumberhistory(end+1) = o.compositor.atomnumberfitmean;
-                %o.compositor.atomnumberhistory(end+1) = o.compositor.atomsx;
-                %o.compositor.atomnumberhistory(end+1) = o.compositor.atomsy; %FIND HERE WICH ATOMNUMBER FIT YOU WANNA CHOSE.
+                
                 o.compositor.widthhistoryx(end+1) = o.compositor.fitdatax(4);
                 o.compositor.widthhistoryy(end+1) = o.compositor.fitdatay(4);
+                
+                o.compositor.oscillationx(end+1) = o.compositor.fitdatax(3);
+                o.compositor.oscillationy(end+1) = o.compositor.fitdatay(3);
                 
                 
             else
                 integral = sum(sum(o.compositor.croppedimage));
-                
                 o.compositor.atomnumberhistory(end+1) = integral;
                 
+                o.compositor.widthhistoryx(end+1) = 0;
+                o.compositor.widthhistoryy(end+1) = 0;
                 
+                x = 1:length(o.compositor.datacroppedx);
+                y = 1:length(o.compositor.datacroppedy);
+                centerofmassx = sum(o.compositor.datacroppedx.*x)/sum(o.compositor.datacroppedx);
+                centerofmassy = sum(o.compositor.datacroppedy'.*y)/sum(o.compositor.datacroppedy);
+                o.compositor.oscillationx(end+1) = centerofmassx;
+                o.compositor.oscillationy(end+1) = centerofmassy;
             end
             
             o.onReplot();
         end
         
-        function onCheckboxfitorcountUpdate(o,hsource,data)
-            if o.checkboxfitorcount.Value == 1;
+        function onTogglefitorcountUpdate(o,hsource,data)
+            if o.togglefitorcount.Value == 1;
                 o.compositor.fitorcount = true;
+                o.togglefitorcount.String = 'Fit';
             else
                 o.compositor.fitorcount = false;
+                o.togglefitorcount.String = 'Count/Mean';
             end
+        end
+        
+        function setAnalysisMethod(o,hSource,data)
+            o.onReplot();
         end
         
         
         function processData(o)
             
-            
-            if numel(o.compositor.widthhistoryx) > 0
+            o.integratedOD = o.compositor.atomnumberhistory*o.compositor.camera.Atomfaktor;
             o.widthx = o.compositor.widthhistoryx;
             o.widthy = o.compositor.widthhistoryy;
-            end
-            %o.integratedOD = o.compositor.atomnumberhistory*o.compositor.camera.Atomfaktor;
-            
-            o.integratedOD = o.compositor.atomnumberhistory;
+            o.centerx = o.compositor.oscillationx;
+            o.centery = o.compositor.oscillationy;
             o.xaxisdata = o.compositor.historyxdata;
             
         end
@@ -121,44 +133,48 @@ classdef HistoryFigure < BaseFigure
                 'Position', [0.0 0.0 0.2 0.05],...
                 'Callback', @o.onClearBtnPush);
             
-            o.checkboxfitorcount = uicontrol('Style','checkbox',...
+            o.popupanalysis = uicontrol('Style', 'popupmenu',...
+                'String', {'Atomnumber','Width','Position'},...
+                'units', 'normalized',...
+                'Position', [0.4 0.95 0.2 0.05],...
+                'Callback', @o.setAnalysisMethod);
+            
+            o.togglefitorcount = uicontrol('Style','toggle',...
                 'Units', 'normalized',...
-                'String',{'Fit/Count'},...
+                'String',{'Fit'},...
                 'Position',[0.8 0.0 0.2 0.05],...
                 'Value',1,...
-                'Callback', @o.onCheckboxfitorcountUpdate);
-            
-            o.popupanalysis = uicontrol('Style', 'popupmenu',...
-                        'String', {'Atomnumber','Width'},...
-                        'units', 'normalized',...
-                        'Position', [0.4 0.95 0.2 0.05],...
-                        'Callback', @o.setAnalysisMethod);
+                'Callback', @o.onTogglefitorcountUpdate);
             
             
         end
         
         function onReplot(o)
             o.processData();
-            items = get(o.popupanalysis,'String');
-            index_selected = get(o.popupanalysis,'Value');
-            item_selected = items{index_selected};
-            if strcmp(item_selected,'Atomnumber') 
-            o.plot = plot(o.axes,o.xaxisdata, o.integratedOD,'or');
+            if o.popupanalysis.Value == 1
+            o.plot = plot(o.axes,o.xaxisdata, o.integratedOD,'.r');
             grid(o.axes,'on');
             xlabel(o.axes,o.compositor.history_xlab);
             ylabel(o.axes,'Atomnumber');
-            o.axes.YLim = [0,1e8];
-            elseif strcmp(item_selected,'Width') 
+            o.axes.YLim = [0,800000];
+            elseif o.popupanalysis.Value == 2
             o.plot = plot(o.axes,o.xaxisdata, o.widthx,'or');
-            hold(o.axes,'on')
+            hold(o.axes,'on');
             o.plot2 = plot(o.axes,o.xaxisdata, o.widthy,'ob');
             grid(o.axes,'on');
-%             o.plot3 = plot(o.axes,o.xaxisdata, (o.widthy+o.widthx)/2,'xk');
-%             grid(o.axes,'on');
             xlabel(o.axes,o.compositor.history_xlab);
-            ylabel(o.axes,'Width (px)');
-            o.axes.YLim = [0,200];
-            hold(o.axes,'off')
+            ylabel(o.axes,'Width');
+            o.axes.YLim = [0,50]; 
+            hold(o.axes,'off');
+            else
+            o.plot = plot(o.axes,o.xaxisdata, o.centerx,'+r');
+            hold(o.axes, 'on');
+            o.plot2 = plot(o.axes,o.xaxisdata, o.centery,'+b');
+            grid(o.axes,'on');
+            xlabel(o.axes,o.compositor.history_xlab);
+            ylabel(o.axes,'Position (px)');
+            o.axes.YLim = [120,170];
+            hold(o.axes,'off'); 
             end
         end
         

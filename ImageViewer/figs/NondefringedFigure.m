@@ -13,8 +13,8 @@ classdef NondefringedFigure < BaseFigure
         
         roiRect
         atomRect
-        r_roi = [206 149 1064 725]
-        r_atoms = [855 367 316 313]
+        r_roi = [138,39,829,462]
+        r_atoms = [247,68,238,423]
         %         r_roi = [181,39,394,462]
         %         r_atoms = [247,68,238,395]
         pushupdate
@@ -280,10 +280,10 @@ classdef NondefringedFigure < BaseFigure
             end
             if ~isempty(o.imageSet)
                 o.roiRect = imrect(o.axes, o.r_roi,...
-                    'PositionConstraintFcn', makeConstrainToRectFcn('imrect',[1 1392],[1 1024]));
+                    'PositionConstraintFcn', makeConstrainToRectFcn('imrect',[1 o.imageSet.dimx],[1 o.imageSet.dimy]));
                 
                 o.atomRect = imrect(o.axes, o.r_atoms,...
-                    'PositionConstraintFcn', makeConstrainToRectFcn('imrect',[1 1392],[1 1024]));
+                    'PositionConstraintFcn', makeConstrainToRectFcn('imrect',[1 o.imageSet.dimx],[1 o.imageSet.dimy]));
                 setColor(o.atomRect,'r');
             end
         end

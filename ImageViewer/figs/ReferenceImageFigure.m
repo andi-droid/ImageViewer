@@ -2,7 +2,7 @@ classdef ReferenceImageFigure < ImageBaseFigure
     properties
         % Data
         image
-        
+        sizeofimg
         %Helper
         wjet
     end
@@ -18,6 +18,7 @@ classdef ReferenceImageFigure < ImageBaseFigure
         
         function processData(o)
                 o.image = o.compositor.referenceimage;
+                o.sizeofimg = size(o.image);
         end
         
         % implementing BaseFigure
@@ -31,11 +32,14 @@ classdef ReferenceImageFigure < ImageBaseFigure
             o.processData();
             o.imageF(o.image);
             %o.title = title(o.axes, num2str(o.t));
-            %caxis(o.axes, [-0.02 0.1]);   
-%             o.axes.XLim = [1 1024];
-%             o.axes.YLim = [1 512];
-            o.axes.XLim = [1 1392];
-            o.axes.YLim = [1 1024];
+            %caxis(o.axes, [-0.02 0.1]);
+            if isempty(o.image)
+            o.axes.XLim = [1 1024];
+            o.axes.YLim = [1 512];
+            else
+            o.axes.XLim = [1 o.sizeofimg(2)];
+            o.axes.YLim = [1 o.sizeofimg(1)];
+            end
             colormap(o.axes,o.wjet);
             o.clims = [-5000,15000];
             set(o.axes, 'CLim', o.clims);

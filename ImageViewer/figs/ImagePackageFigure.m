@@ -59,7 +59,7 @@ classdef ImagePackageFigure < ImageBaseFigure
         end
         
         function createMask(o)
-            LVL = 58;
+            LVL = 56;
             dimx = size(o.image,2);
             dimy = size(o.image,1);
             if strcmp(o.maskname,'1. BZ')

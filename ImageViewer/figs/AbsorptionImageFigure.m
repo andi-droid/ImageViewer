@@ -6,6 +6,7 @@ classdef AbsorptionImageFigure < ImageBaseFigure
         
         % Data
         image
+        sizeofimg
         
         % Helper
         wjet
@@ -23,6 +24,7 @@ classdef AbsorptionImageFigure < ImageBaseFigure
         
         function processData(o)
                 o.image = o.compositor.absorptionimage;
+                o.sizeofimg = size(o.image);
                  o.text{1} = '';
                  o.text{2} = ['Max counts absorption: ' num2str(o.compositor.absmaxcounts)];
                  o.text{3} = ['Max counts reference: ' num2str(o.compositor.refmaxcounts)];
@@ -36,6 +38,7 @@ classdef AbsorptionImageFigure < ImageBaseFigure
             o.tb  = uicontrol('style','text', 'Parent', o.figure,'Units', 'normalized', 'Position', [0.25 0.8 0.45 0.15]);
             o.axes.Visible = 'off';
             set(o.tb,'String','Info');
+
         end
         
         function onReplot(o)
@@ -43,11 +46,14 @@ classdef AbsorptionImageFigure < ImageBaseFigure
             o.tb.String = o.text;
             o.imageF(o.image);
             %o.title = title(o.axes, num2str(o.t));
-            %caxis(o.axes, [-0.02 0.1]);   
-%             o.axes.XLim = [1 1024];
-%             o.axes.YLim = [1 512];
-            o.axes.XLim = [1 1392];
-            o.axes.YLim = [1 1024];
+            %caxis(o.axes, [-0.02 0.1]); 
+            if isempty(o.image)
+            o.axes.XLim = [1 1024];
+            o.axes.YLim = [1 512];
+            else
+            o.axes.XLim = [1 o.sizeofimg(2)];
+            o.axes.YLim = [1 o.sizeofimg(1)];
+            end
             colormap(o.axes,o.wjet);
             o.clims = [-5000,15000];
             set(o.axes, 'CLim', o.clims);

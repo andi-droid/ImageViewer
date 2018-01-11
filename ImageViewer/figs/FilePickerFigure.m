@@ -52,12 +52,11 @@ classdef FilePickerFigure < BaseFigure
     methods
         % constructor
         function o = FilePickerFigure()
-            o.windowTitle = mfilename('class');
+            
         end
         
         % callbacks
         function o = onSelectionChange(o, source,callbackdata)
-            %disp('onSelectionChange()');
             if o.listbox.Max == 1
                 o.compositor.plotfitdatax = [];
                 o.compositor.plotfitdatay = [];
@@ -73,7 +72,15 @@ classdef FilePickerFigure < BaseFigure
 %                 if o.compositor.camerachange
 %                     o.compositor.camera = Camera(o.compositor.cameraID,o.compositor.species);
 %                 end
+                
+                camerabefore = o.compositor.cameraID;
                 o.compositor.cameraID = o.compositor.currentabsorptionimage(12);
+                o.compositor.camerachange = ~(strcmp(camerabefore,o.compositor.cameraID));
+                
+                if o.compositor.camerachange
+                    o.compositor.camera = Camera(o.compositor.cameraID,o.compositor.species);
+                end
+                
                 o.compositor.camera = Camera(o.compositor.cameraID,o.compositor.species);
                 expression = 'atoms';
                 replaceref = 'noatoms';
@@ -165,11 +172,7 @@ classdef FilePickerFigure < BaseFigure
                 
                 datestring = o.compositor.imageDirectory(end-22:end);
                 datestringreduced = datestring(end-9:end);
-                %%% TODO 2017/10/30 BR: need to somehow add this in the parameters file
-                %path = [o.compositor.camera.protocolpath datestring '/' datestringreduced '_' o.compositor.currentabsorptionimage(14:17) '_t_proto.dat']; % BFM string
-                path = [o.compositor.camera.protocolpath datestring '\Protocol-' datestringreduced '_' o.compositor.currentabsorptionimage(14:17) '.xml' ]; % Lithium string
-                %disp(path);
-                
+                path = [o.compositor.camera.protocolpath datestring '/' datestringreduced '_' o.compositor.currentabsorptionimage(14:17) '_t_proto.dat'];
                 o.compositor.currentprotocol = path;
                 
                 switchroi = false;
@@ -208,8 +211,8 @@ classdef FilePickerFigure < BaseFigure
                 o.selectedIDs = [];
                 o.selectedIDs = o.listbox.String(o.listbox.Value);
                 
-                set(o.seldata1, 'String',o.listbox.Value(1));
-                set(o.seldata2, 'String',o.listbox.Value(end));
+                set(o.seldata1, 'String',o.selectedIDs{1});
+                set(o.seldata2, 'String',o.selectedIDs{end});
                 
             end
             
@@ -255,12 +258,14 @@ classdef FilePickerFigure < BaseFigure
             
             try
                 o.updateParameters();
-                o.listbox.Value = 1;
+                last = numel(o.listbox.String);
+                o.listbox.Value = last;
                 o.onSelectionChange(o.listbox);
             catch
                 o.compositor.imageDirectory = tempimagedirectory;
                 o.updateParameters();
-                o.listbox.Value = 1;
+                last = numel(o.listbox.String)
+                o.listbox.Value = last;
                 o.onSelectionChange(o.listbox);
                 errordlg('Error selecting directory. Try again')
             end
@@ -336,7 +341,6 @@ classdef FilePickerFigure < BaseFigure
                 o.seldata1.Visible = 'on';
                 o.seldata2.Visible = 'on';
                 o.text.Visible = 'on';
-                o.text2.Visible = 'on';
                 o.status.Visible = 'on';
                 o.listbox.Max = 5000;
                 dirLength = length(dir(o.compositor.imageDirectory));
@@ -355,7 +359,6 @@ classdef FilePickerFigure < BaseFigure
                 o.seldata1.Visible = 'off';
                 o.seldata2.Visible = 'off';
                 o.text.Visible = 'off';
-                o.text2.Visible = 'off';
                 o.status.Visible = 'off';
                 
             end
@@ -390,7 +393,7 @@ classdef FilePickerFigure < BaseFigure
         end
         
         function onReadDataPush(o,hsource,data)
-            %disp('onReadDataPush()');
+            
             %             o.selectedIDs = [];
             %             o.selectedIDs = o.listbox.String(o.listbox.Value);
             %
@@ -443,7 +446,8 @@ classdef FilePickerFigure < BaseFigure
             day = [month today];
             o.compositor.imageDirectory = day;
             o.updateParameters();
-            o.listbox.Value = 1;
+            last = numel(o.listbox.String);
+            o.listbox.Value = last;
             o.onSelectionChange(o.listbox);
             
         end
@@ -461,7 +465,8 @@ classdef FilePickerFigure < BaseFigure
                 o.compositor.imageDirectory(end-22:end-19) = o.dayupstr(1:4);
                 try
                     o.updateParameters();
-                    o.listbox.Value = 1;
+                    last = numel(o.listbox.String);
+                    o.listbox.Value = last;
                     o.onSelectionChange(o.listbox);
                 catch
                     o.onTodayBtnPush();
@@ -485,7 +490,8 @@ classdef FilePickerFigure < BaseFigure
                 o.compositor.imageDirectory(end-17:end-11) = o.daydownstr(1:7);
                 o.compositor.imageDirectory(end-22:end-19) = o.daydownstr(1:4);
                 o.updateParameters();
-                o.listbox.Value = 1;
+                last = numel(o.listbox.String);
+                o.listbox.Value = last;
                 o.onSelectionChange(o.listbox);
             else
                 errordlg('First deactivate Contiuous Mode')
@@ -573,7 +579,7 @@ classdef FilePickerFigure < BaseFigure
             expression = 'atoms';
             replaceref = 'noatoms';
             replacedef = 'def';
-            o.imagepackage = zeros(numel(o.selectedIDs),size(o.compositor.absorptionimage,2),size(o.compositor.absorptionimage,1));
+            %o.imagepackage = zeros(numel(o.selectedIDs),size(o.compositor.absorptionimage,2),size(o.compositor.absorptionimage,1));
             o.imagepackagecropped = zeros(numel(o.selectedIDs),size(o.compositor.croppedimage,2),size(o.compositor.croppedimage,1));
             o.protocolpackage = cell(numel(o.selectedIDs));
             o.imagepackage = [];
@@ -590,10 +596,8 @@ classdef FilePickerFigure < BaseFigure
             h = uiwaitbar(position);
             for i = 1:numel(o.selectedIDs)
                 name = selectedfilenamesabs{i};
-                %%% TODO 2017/10/30 BR: need to add this to a parameters file
-                protocol = load([o.compositor.camera.protocolpath datestring '/mat/' datestringreduced '_' name(14:17) '_t_proto.mat']); % BFM string
-                %protocol = load([o.compositor.camera.protocolpath datestring '/mat/' datestringreduced '_' name(14:17) '.xml']); % Lithium string
-                %disp(['Let''s do it! ' num2str(i)]);
+                if exist([o.compositor.camera.protocolpath datestring '/mat/' datestringreduced '_' name(14:17) '_t_proto.mat'], 'file')
+                protocol = load([o.compositor.camera.protocolpath datestring '/mat/' datestringreduced '_' name(14:17) '_t_proto.mat']);
                 pathabs = fullfile([o.compositor.imageDirectory '/' selectedfilenamesabs{i}]);
                 pathref = fullfile([o.compositor.imageDirectory '/' selectedfilenamesref{i}]);
                 error = true;
@@ -652,12 +656,13 @@ classdef FilePickerFigure < BaseFigure
                     end
                 end
                 croppedimage = image(o.compositor.roi(2):(o.compositor.roi(4)+o.compositor.roi(2)),o.compositor.roi(1):(o.compositor.roi(3)+o.compositor.roi(1)));
-                o.compositor.imagepackage(i,:,:) = image;
+                %o.compositor.imagepackage(i,:,:) = image;
                 o.compositor.imagepackagecropped(i,:,:) = croppedimage;
                 o.compositor.protocolpackage{i} = protocol;
                 status = i/numel(o.selectedIDs);
                 uiwaitbar(h,status);
                 drawnow
+                end
             end
             
             notify(o.compositor,'updateImagePackage');
@@ -686,7 +691,6 @@ classdef FilePickerFigure < BaseFigure
             replacedef = 'def';
             datestring = o.compositor.imageDirectory(end-22:end);
             datestringreduced = datestring(end-9:end);
-            
             selectedfilenamesabs = o.filenamesabs(indexselection);
             
             selectedfilenamesref = regexprep(selectedfilenamesabs,expression,replaceref);
@@ -772,7 +776,7 @@ classdef FilePickerFigure < BaseFigure
             o.pushanalysis = uicontrol('Style','pushbutton',...
                 'Units', 'normalized',...
                 'String',{'Read Data'},...
-                'Position',[0.7 0.65 0.3 0.1],...
+                'Position',[0.7 0.7 0.3 0.1],...
                 'Visible','off',...
                 'Callback', @o.onReadDataPush);
             
@@ -786,7 +790,6 @@ classdef FilePickerFigure < BaseFigure
             o.seldata1  = uicontrol('style','edit', 'Parent', o.figure,'Units', 'normalized','Visible','off', 'Position', [0.7 0.8 0.145 0.1]);
             o.seldata2  = uicontrol('style','edit', 'Parent', o.figure,'Units', 'normalized', 'Visible','off','Position', [0.855 0.8 0.145 0.1],'Callback',@o.onEnterValue);
             o.text  = uicontrol('style','text', 'Parent', o.figure,'Units', 'normalized','Visible','off','String',':', 'Position', [0.845 0.8 0.01 0.1]);
-            o.text2  = uicontrol('style','text', 'Parent', o.figure,'Units', 'normalized','Visible','off','String','Be aware NOT ID!', 'Position', [0.7 0.75 0.3 0.05]);
             
             o.seldatadefringe1  = uicontrol('style','edit', 'Parent', o.figure,'Units', 'normalized','Visible','off', 'Position', [0.7 0.3 0.145 0.1]);
             o.seldatadefringe2  = uicontrol('style','edit', 'Parent', o.figure,'Units', 'normalized', 'Visible','off','Position', [0.855 0.3 0.145 0.1],'Callback',@o.onEnterValuedefringe);

@@ -8,6 +8,7 @@ classdef ImageFigure < ImageBaseFigure
         layout
         % Data
         image
+        sizeofimage
         wjet
         
     end
@@ -41,6 +42,7 @@ classdef ImageFigure < ImageBaseFigure
         
         function processData(o)
             o.image = o.compositor.image;
+            o.sizeofimage = size(o.image);
             %o.compositor.croppedimage = o.image(o.compositor.roi(2):(o.compositor.roi(4)+o.compositor.roi(2)),o.compositor.roi(1):(o.compositor.roi(3)+o.compositor.roi(1)));
             
         end
@@ -113,17 +115,13 @@ classdef ImageFigure < ImageBaseFigure
             o.imageF(o.image);
             %o.title = title(o.axes, num2str(o.t));
             %caxis(o.axes, [-0.02 0.1]);
-            if ~isempty(o.compositor.cameraID)
-                if strcmp(o.compositor.cameraID,'3')
+            if isempty(o.image)
                     o.axes.XLim = [1 1024];
                     o.axes.YLim = [1 512];
-                else
-                    o.axes.XLim = [1 1392];
-                    o.axes.YLim = [1 1024];
-                end
+
             else
-                o.axes.XLim = [1 1392];
-                o.axes.YLim = [1 1024];
+                o.axes.XLim = [1 o.sizeofimage(2)];
+                o.axes.YLim = [1 o.sizeofimage(1)];
             end
             o.axes.Visible = 'off';
             colormap(o.axes,o.wjet);

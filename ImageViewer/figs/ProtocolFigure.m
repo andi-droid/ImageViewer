@@ -14,11 +14,11 @@ classdef ProtocolFigure < BaseFigure
         textnumbernr
         popupanalysis
         checkboxaverage
+        click
         
         radioLabels = {'ID',...
             'Duration','Analog','VISA',...
             'Variables'};
-        
     end
     
     methods
@@ -28,9 +28,9 @@ classdef ProtocolFigure < BaseFigure
         end
         
         function onRadioClick(o,hSource,callbackdata,iRadio)
-            for i = 1:numel(o.radios)
+            for i = 1:4
                 set(o.radios(i), 'Value', i==iRadio);
-                drawnow();
+                drawnow()
             end
             o.onReplot();
             o.compositor.historystring = get(o.radios(iRadio),'String');
@@ -133,7 +133,6 @@ classdef ProtocolFigure < BaseFigure
             
             
             %o.tb  = uicontrol('style','edit', 'Parent', o.figure,'Units', 'normalized', 'Position', [0.7 0.1 0.2 0.1]);
-            
             
             
             for iRadio=1:numel(o.radioLabels)

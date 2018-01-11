@@ -2,7 +2,7 @@ classdef OscillationFigure < BaseFigure
     properties
         % GUI elements 
         clearbtn
-        checkboxfitormean
+        togglefitormean
         
         % Data
         centerx
@@ -63,11 +63,13 @@ classdef OscillationFigure < BaseFigure
             o.onClearBtnPush(o.clearbtn);
         end
         
-        function onCheckboxfitormeanUpdate(o,hsource,data)
-            if o.checkboxfitormean.Value == 1;
+        function onTogglefitormeanUpdate(o,hsource,data)
+            if o.togglefitormean.Value == 1;
                 o.compositor.fitormean = true;
+                o.togglefitormean.String = 'Fit';
             else
                 o.compositor.fitormean = false;
+                o.togglefitormean.String = 'Mean';
             end       
         end
         
@@ -97,12 +99,12 @@ classdef OscillationFigure < BaseFigure
                 'Position', [0.0 0.0 0.2 0.05],...
                 'Callback', @o.onClearBtnPush);
             
-              o.checkboxfitormean = uicontrol('Style','checkbox',...
+              o.togglefitormean = uicontrol('Style','toggle',...
                 'Units', 'normalized',...
-                'String',{'Fit/Mean'},...
+                'String',{'Fit'},...
                 'Position',[0.8 0.0 0.2 0.05],...
                 'Value',1,...
-                'Callback', @o.onCheckboxfitormeanUpdate);
+                'Callback', @o.onTogglefitormeanUpdate);
             
                         
         end
@@ -115,7 +117,7 @@ classdef OscillationFigure < BaseFigure
             grid(o.axes,'on');
             xlabel(o.axes,o.compositor.history_xlab);
             ylabel(o.axes,'Position (px)');
-            o.axes.YLim = [0,300];
+            o.axes.YLim = [140,160];
             hold(o.axes,'off');
         end
         
