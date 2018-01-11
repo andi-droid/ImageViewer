@@ -30,14 +30,15 @@ classdef Camera_Default < handle
         basepath = 'D:\\Data/absimg/';
         protocolpath = '//192.168.1.6/d/Data/ExpProtocols/';
         % [1] = datestring, [2] = datestringreduced, [3] = id
-        protocolfile = '//afs/physnet.uni-hamburg.de/project/bfm/ExpProtocols/%s/%s_%s_t_proto.dat';
+        protocolfile; % Please update this for your system
+        %protocolfile = '//afs/physnet.uni-hamburg.de/project/bfm/ExpProtocols/%s/%s_%s_t_proto.dat';
         %protocolfile = '//192.168.1.6/d/Data/ExpProtocols/%s\\Protocol-%s_%s.xml';
         imageDirectoryNode = 'D:\\Data/absimg/2017/';
     end
     
     methods
-        % constructor
-        function o = Camera_Default(ID,species)
+        % super constructor
+        function Default(o,ID,species)
             o.ID = ID;
             o.species = species;
             
@@ -143,119 +144,35 @@ classdef Camera_Default < handle
             if strcmp(species,'Rb')
                 o.Detuning = DetuningRb;
                 o.Gamma = GammaRb;
-                ISat = ISatRb;
+                o.ISat = ISatRb;
                 o.Lambda = LambdaRb;              
-                E_Photon = hbar.*omegaRb;
+                o.E_Photon = hbar.*omegaRb;
                 
             elseif strcmp(species,'K')
                 o.Detuning = DetuningK;
                 o.Gamma = GammaK;
-                ISat = ISatK;
+                o.ISat = ISatK;
                 o.Lambda = LambdaK;              
-                E_Photon = hbar.*omegaK;
+                o.E_Photon = hbar.*omegaK;
                 
             elseif strcmp(species,'Li6')
                 o.Detuning = DetuningLi6_D2;
                 o.Gamma = GammaLi6_D2;
-                ISat = ISatLi6_D2;
+                o.ISat = ISatLi6_D2;
                 o.Lambda = LambdaLi6_D2;
-                E_Photon = hbar.*omegaLi6_D2;
+                o.E_Photon = hbar.*omegaLi6_D2;
                 
             elseif strcmp(species,'Li7')
                 o.Detuning = DetuningLi7_D2;
                 o.Gamma = GammaLi7_D2;
-                ISat = ISatLi7_D2;
+                o.ISat = ISatLi7_D2;
                 o.Lambda = LambdaLi7_D2;
-                E_Photon = hbar.*omegaLi7_D2;
+                o.E_Photon = hbar.*omegaLi7_D2;
                 
             else
                 disp('Wrong species')
             end
             
-            
-            if strcmp(ID,'0') % Pixelfly QE / Parameter anpassen!
-                o.ISat = ISat;
-                o.E_Photon = E_Photon;
-                o.PixSize = 6.45E-6; % Pixel Size in m
-                o.magnification   = 100/250; % 4f image: f1 = 250 mm, f2 = 100 mm
-                o.C_F = 3.8; % A/D conversion factor
-                o.TE = 0.9; % ??? Transmission Efficiency
-                o.t_Bel = 50e-6; % !
-                if strcmp(species, 'K')
-                    o.QE = 0.155;
-                elseif strcmp(species,'Rb')
-                    o.QE = 0.1275;
-                elseif strcmp(species,'Li6')
-                    o.QE = 0.3; % First estimation from the data sheet
-                elseif strcmp(species,'Li7')
-                    o.QE = 0.3; % First estimation from the data sheet
-                end
-                o.CountToInt = (o.magnification./o.PixSize).^2 * o.C_F * o.E_Photon / (o.QE * o.TE * o.t_Bel); % [W/(count*m�)]
-                o.Atomfaktor = (o.PixSize.^2/o.magnification.^2) .* 2 .* pi .* (1+ 4.*(o.Detuning.^2/o.Gamma.^2)) ./ (3.*o.Lambda.^2);
-            
-            elseif strcmp(ID,'1') % Pixelfly QE /Parameter anpassen!
-                o.ISat = ISat;
-                o.E_Photon = E_Photon;
-                o.PixSize = 6.45E-6; % Pixel Size in m
-                o.magnification   = 100/250; % 4f image: f1 = 250 mm, f2 = 100 mm
-                o.C_F = 3.8; % A/D conversion factor
-                o.TE = 0.9; % ??? Transmission Efficiency
-                o.t_Bel = 50e-6; % !
-                if strcmp(species,'K')
-                    o.QE = 0.155;
-                elseif strcmp(species,'Rb')
-                    o.QE = 0.1275;
-                elseif strcmp(species,'Li6')
-                    o.QE = 0.3; % First estimation from the data sheet
-                elseif strcmp(species,'Li7')
-                    o.QE = 0.3; % First estimation from the data sheet
-                end
-                o.CountToInt = (o.magnification./o.PixSize).^2 * o.C_F * o.E_Photon / (o.QE * o.TE * o.t_Bel); % [W/(count*m�)]
-                o.Atomfaktor = (o.PixSize.^2/o.magnification.^2) .* 2 .* pi .* (1+ 4.*(o.Detuning.^2/o.Gamma.^2)) ./ (3.*o.Lambda.^2);
-                
-            elseif strcmp(ID,'2') % Pixelfly QE / Parameter anpassen!
-                o.ISat = ISat;
-                o.E_Photon = E_Photon;
-                o.PixSize = 6.45E-6; % Pixel Size in m
-                o.magnification   = 300/150; %; % 4f image: f1 = 150 mm, f2 = 300 mm
-                o.C_F = 3.8; % A/D conversion factor
-                o.TE = 0.9; % ??? Transmission Efficiency
-                o.t_Bel = 10e-6; % !
-                if strcmp(species, 'K')
-                    o.QE = 0.155;
-                elseif strcmp(species,'Rb')
-                    o.QE = 0.1275;
-                elseif strcmp(species,'Li6')
-                    o.QE = 0.3; % First estimation from the data sheet
-                elseif strcmp(species,'Li7')
-                    o.QE = 0.3; % First estimation from the data sheet
-                end
-                o.CountToInt = (o.magnification./o.PixSize).^2 * o.C_F * o.E_Photon / (o.QE * o.TE * o.t_Bel); % [W/(count*m�)]
-                o.Atomfaktor = (o.PixSize.^2/o.magnification.^2) .* 2 .* pi .* (1+ 4.*(o.Detuning.^2/o.Gamma.^2)) ./ (3.*o.Lambda.^2);
-
-            elseif strcmp(ID,'3') %Andor LA / Paramter anpassen
-                o.ISat = ISat;
-                o.E_Photon = E_Photon;
-                o.PixSize = 13E-6;
-                o.magnification   = 2.15;
-                o.C_F = 4*2800/2200*0.76;
-                o.TE = 0.9;
-                o.t_Bel = 50e-6;
-                if strcmp(species,'K')
-                    o.QE = 0.93;
-                elseif strcmp(species,'Rb')
-                    o.QE = 0.94;
-                elseif strcmp(species,'Li6')
-                    o.QE = 1; % Have to be looked up
-                elseif strcmp(species,'Li7')
-                    o.QE = 1; % Have to be looked up
-                end
-                o.CountToInt = (o.magnification./o.PixSize).^2 * o.C_F * o.E_Photon / (o.QE * o.TE * o.t_Bel); % [W/(count*m�)]
-                o.Atomfaktor = (o.PixSize.^2/o.magnification.^2) .* 2 .* pi .* (1+ 4.*(o.Detuning.^2/o.Gamma.^2)) ./ (3.*o.Lambda.^2);
-           
-            else
-                disp('Wrong camera ID')
-            end
         end
         
     end
