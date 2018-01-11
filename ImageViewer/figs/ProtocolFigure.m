@@ -28,7 +28,7 @@ classdef ProtocolFigure < BaseFigure
         end
         
         function onRadioClick(o,hSource,callbackdata,iRadio)
-            for i = 1:4
+            for i = 1:5
                 set(o.radios(i), 'Value', i==iRadio);
                 drawnow()
             end
