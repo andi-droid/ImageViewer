@@ -38,7 +38,6 @@ classdef ProtocolFigure < BaseFigure
             o.compositor.indexslotduration = 1;
             o.compositor.indexanalog = 1;
             o.compositor.indexvisa = 1;
-            o.compositor.indexvariables = 1;
             o.compositor.visacommand = 'CURR';
             o.compositor.visacommandnumber = 1;
             o.compositor.visacommandnumber2 = 1;
@@ -62,8 +61,6 @@ classdef ProtocolFigure < BaseFigure
             items = get(hSource,'String');
             index_selected = get(hSource,'Value');
             item_selected = items{index_selected};
-            o.compositor.history_xlab = item_selected;
-            o.compositor.analysis_xlab = item_selected;
             o.compositor.indexvariables = index_selected;
             notify(o.compositor,'updateAnalysis');
         end
