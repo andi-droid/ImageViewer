@@ -70,6 +70,8 @@ classdef ImageFigure < ImageBaseFigure
             if exist('figs/last_abscenter.mat')
                 load('figs/last_abscenter.mat');
                 o.compositor.abscenter = abscenter;
+            else
+                o.compositor.abscenter = o.compositor.camera.abscenter;
             end
             %o.compositor.abscenter = [377,254];
             %             o.linkMouseWheelToIndex('time');
@@ -128,11 +130,13 @@ classdef ImageFigure < ImageBaseFigure
             o.clims = [-1,3.2];
             set(o.axes, 'CLim', o.clims);
             daspect(o.axes, [1 1 1]);
-            %if ~isempty(o.image)
+            if ~isempty(o.image)
                 o.roiRect = imrect(o.axes, o.compositor.roi,...
                     'PositionConstraintFcn', makeConstrainToRectFcn('imrect',o.axes.XLim,o.axes.YLim));
                 o.roiRect.addNewPositionCallback(@(x,y)o.changeRect);
-            %end
+            else
+                o.compositor.roi = o.compositor.camera.roi;
+            end
             
             
         end

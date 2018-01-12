@@ -10,7 +10,7 @@ classdef ImageCompositor < BaseFrame
         camera
         cameraID
         camerachange = false
-        loadprotocol = true
+        loadprotocol = false
         fitbuttonstate = true
         plotfitstate = false
         fitormean = true
@@ -31,7 +31,6 @@ classdef ImageCompositor < BaseFrame
         indexslotduration
         indexanalog
         indexvisa
-        indexvariables
         visacommand
         visacommandnumber
         visacommandnumber2
@@ -55,11 +54,8 @@ classdef ImageCompositor < BaseFrame
         absmaxcounts
         refmaxcounts        
         imageDirectory
-        roi = [200,230,500,500]
-        abscenter =[376,272]
-        
-        defringeatoms = [896 469 169 98]
-        defringeroi = [780 377 427 298]
+        roi
+        abscenter
         
         
         imagesetabs
@@ -85,13 +81,11 @@ classdef ImageCompositor < BaseFrame
         ydataanalysis
         xdataanalysis
         atomnumberhistory
-        widthhistoryx
-        widthhistoryy
         historyxdata
         oscillationx
         oscillationy
-        atomsx
-        atomsy
+        widthhistoryx
+        widthhistoryy
 
         % Timer
         timerobj
@@ -143,6 +137,7 @@ classdef ImageCompositor < BaseFrame
             for iFigure=1:numel(o.figures)
                 o.figures{iFigure}.create(o);
             end
+            
             
         end        
     end

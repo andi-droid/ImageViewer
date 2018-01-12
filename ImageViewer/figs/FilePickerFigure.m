@@ -149,8 +149,8 @@ classdef FilePickerFigure < BaseFigure
                     
                 else
                     if o.exposurecorrection
-                        atomsroi = o.compositor.defringeatoms;
-                        roi = o.compositor.defringeroi;
+                        atomsroi = o.compositor.camera.defringeatoms;
+                        roi = o.compositor.camera.defringeroi;
                         mask = false(size(abs));
                         mask(atomsroi(2):(atomsroi(2)+atomsroi(4)-1),atomsroi(1):(atomsroi(1)+atomsroi(3)-1)) = true;
                         atomsMask = mask;
