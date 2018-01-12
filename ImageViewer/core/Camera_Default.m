@@ -34,6 +34,8 @@ classdef Camera_Default < handle
         %protocolfile = '//afs/physnet.uni-hamburg.de/project/bfm/ExpProtocols/%s/%s_%s_t_proto.dat';
         %protocolfile = '//192.168.1.6/d/Data/ExpProtocols/%s\\Protocol-%s_%s.xml';
         imageDirectoryNode = 'D:\\Data/absimg/2017/';
+        
+        defRectsPath;
     end
     
     methods

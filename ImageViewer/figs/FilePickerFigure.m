@@ -214,8 +214,11 @@ classdef FilePickerFigure < BaseFigure
                 o.selectedIDs = [];
                 o.selectedIDs = o.listbox.String(o.listbox.Value);
                 
-                set(o.seldata1, 'String',o.selectedIDs{1});
-                set(o.seldata2, 'String',o.selectedIDs{end});
+                set(o.seldata1, 'String',o.listbox.Value(1));
+                set(o.seldata2, 'String',o.listbox.Value(end));
+                
+                set(o.seldatadefringe1, 'String',o.listbox.Value(1));
+                set(o.seldatadefringe2, 'String',o.listbox.Value(end));
                 
             end
             
@@ -348,7 +351,7 @@ classdef FilePickerFigure < BaseFigure
                 o.listbox.Max = 5000;
                 dirLength = length(dir(o.compositor.imageDirectory));
                 if o.checkboxdefringed.Value == 1
-                    a = dir([o.compositor.imageDirectory '/*_def.tif']);
+                    a = dir([o.compositor.imageDirectory '/*_def.tif']); % This is not completely fail save
                 else
                     a = dir([o.compositor.imageDirectory '/*_atoms.tif']);
                 end
@@ -357,6 +360,9 @@ classdef FilePickerFigure < BaseFigure
             else
                 C = get(0, 'DefaultUIControlBackgroundColor');
                 set(hsource, 'BackgroundColor', C);
+                o.listbox.Value = str2double(o.seldata1.String);
+                o.seldata2.String = o.seldata1.String;
+                o.seldatadefringe2.String = o.seldatadefringe1.String;
                 o.listbox.Max = 1;
                 o.pushanalysis.Visible = 'off';
                 o.seldata1.Visible = 'off';
@@ -386,6 +392,9 @@ classdef FilePickerFigure < BaseFigure
             else
                 C = get(0, 'DefaultUIControlBackgroundColor');
                 set(hsource, 'BackgroundColor', C);
+                o.listbox.Value = str2double(o.seldatadefringe1.String);
+                o.seldata2.String = o.seldata1.String;
+                o.seldatadefringe2.String = o.seldatadefringe1.String;
                 o.listbox.Max = 1;
                 o.pushdefringe.Visible = 'off';
                 o.seldatadefringe1.Visible = 'off';
@@ -519,7 +528,7 @@ classdef FilePickerFigure < BaseFigure
             month = [year today(1:7) '/'];
             day = [month today];
             if o.checkboxdefringed.Value == 1
-                a = dir([o.compositor.imageDirectory '/*_def.tif']);
+                a = dir([o.compositor.imageDirectory '/*_def.tif']); % Needs to be in the configuration
             else
                 a = dir([o.compositor.imageDirectory '/*_atoms.tif']);
             end
@@ -599,8 +608,8 @@ classdef FilePickerFigure < BaseFigure
             h = uiwaitbar(position);
             for i = 1:numel(o.selectedIDs)
                 name = selectedfilenamesabs{i};
-                if exist([o.compositor.camera.protocolpath datestring '/mat/' datestringreduced '_' name(14:17) '_t_proto.mat'], 'file')
-                protocol = load([o.compositor.camera.protocolpath datestring '/mat/' datestringreduced '_' name(14:17) '_t_proto.mat']);
+                if exist([o.compositor.camera.protocolpath datestring '/mat/' datestringreduced '_' name(14:17) '_t_proto.mat'], 'file') % Needs to be in the configuration
+                protocol = load([o.compositor.camera.protocolpath datestring '/mat/' datestringreduced '_' name(14:17) '_t_proto.mat']); % Needs to be in the configuration
                 pathabs = fullfile([o.compositor.imageDirectory '/' selectedfilenamesabs{i}]);
                 pathref = fullfile([o.compositor.imageDirectory '/' selectedfilenamesref{i}]);
                 error = true;

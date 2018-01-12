@@ -123,7 +123,7 @@ classdef NondefringedFigure < BaseFigure
         function onSavePush(o,~,~)
             r_roi = o.r_roi;
             r_atoms = o.r_atoms;
-            save('../Preparation/roi_defringing.mat','r_roi','r_atoms');
+            save(o.compositor.camera.defRectsPath,'r_roi','r_atoms');
         end
         
         
