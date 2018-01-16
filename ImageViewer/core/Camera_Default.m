@@ -24,6 +24,11 @@ classdef Camera_Default < handle
         Atomfaktor
         Gamma
         
+            roi = [220    100   350   300]
+            abscenter = [376,272]
+            defringeatoms = [247,68,238,395]
+            defringeroi = [181,39,394,462]
+        
 %         basepath = 'C:\Users\LithiumMicroscope\Desktop\Data\Images\';
 %         protocolpath = '\\LASO2013-D3\Data\ExpProtocols\';
 %         imageDirectoryNode = 'C:\Users\LithiumMicroscope\Desktop\Data\Images\2017\';
@@ -35,7 +40,7 @@ classdef Camera_Default < handle
         %protocolfile = '//192.168.1.6/d/Data/ExpProtocols/%s\\Protocol-%s_%s.xml';
         imageDirectoryNode = 'D:\\Data/absimg/2017/';
         
-        defRectsPath;
+        defRectsPath
     end
     
     methods
