@@ -152,11 +152,11 @@ classdef HistoryFigure < BaseFigure
         function onReplot(o)
             o.processData();
             if o.popupanalysis.Value == 1
-            o.plot = plot(o.axes,o.xaxisdata, o.integratedOD,'.r');
+            o.plot = plot(o.axes,o.xaxisdata, o.integratedOD,'or');
             grid(o.axes,'on');
             xlabel(o.axes,o.compositor.history_xlab);
             ylabel(o.axes,'Atomnumber');
-            o.axes.YLim = [0,800000];
+            o.axes.YLim = [0,8000000];
             elseif o.popupanalysis.Value == 2
             o.plot = plot(o.axes,o.xaxisdata, o.widthx,'or');
             hold(o.axes,'on');
@@ -164,7 +164,7 @@ classdef HistoryFigure < BaseFigure
             grid(o.axes,'on');
             xlabel(o.axes,o.compositor.history_xlab);
             ylabel(o.axes,'Width');
-            o.axes.YLim = [0,50]; 
+            o.axes.YLim = [0,300]; 
             hold(o.axes,'off');
             else
             o.plot = plot(o.axes,o.xaxisdata, o.centerx,'+r');

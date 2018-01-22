@@ -86,6 +86,8 @@ classdef ImageCompositor < BaseFrame
         oscillationy
         widthhistoryx
         widthhistoryy
+        atomsx
+        atomsy
 
         % Timer
         timerobj

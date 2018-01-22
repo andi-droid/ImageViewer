@@ -146,7 +146,7 @@ classdef InformationFigure < BaseFigure
                 a(1)= o.compositor.fitdatax(2).*sqrt(2*pi).*o.compositor.fitdatax(4);
                 a(2)= o.compositor.fitdatay(2).*sqrt(2*pi).*o.compositor.fitdatay(4);
                 o.compositor.atomnumberfitmean = mean(a);
-				notify(o.compositor, 'updateFitResults');
+                notify(o.compositor, 'updateFitResults');
             end
             
             if strcmp(o.fitFctName,'2D BEC')
@@ -272,19 +272,12 @@ classdef InformationFigure < BaseFigure
             if ~isempty(o.compositor.fitdatax)
                 atomnumberfit(1) = o.compositor.fitdatax(2).*o.compositor.fitdatax(4)*sqrt(2*pi).*o.compositor.camera.Atomfaktor;
                 atomnumberfit(2) = o.compositor.fitdatay(2).*o.compositor.fitdatay(4)*sqrt(2*pi).*o.compositor.camera.Atomfaktor;
-                o.compositor.atomsx = atomnumberfit(1);
-                o.compositor.atomsy = atomnumberfit(2);
-				o.compositor.atomnumberfitmean = round(nanmean(atomnumberfit));
                 sigmax = o.compositor.fitdatax(4);
                 sigmay = o.compositor.fitdatay(4);
-				centerx = o.compositor.fitdatax(3);
-                centery = o.compositor.fitdatay(3);
             else
                 atomnumberfit = [];
                 sigmax = [];
                 sigmay = [];
-                centerx = [];
-                centery = [];
             end
                                   
             if ~isempty(o.compositor.currentabsorptionimage)
@@ -296,12 +289,8 @@ classdef InformationFigure < BaseFigure
                 o.text{6} = ['Atomnumber(Fit): ' num2str(round(nanmean(atomnumberfit)))];
                 o.text{7} = ['Width x(px): ' num2str(round(sigmax))];
                 o.text{8} = ['Width y(px): ' num2str(round(sigmay))];
-                o.text{9} = ['Center x(px): ' num2str(round(centerx))];
-                o.text{10} = ['Center y(px): ' num2str(round(centery))];
-                o.text{11} = ['Temperature (T/Tf): ' num2str(round(o.tempF,2))];
-                o.text{12} = ['Cond. Fraction: ' num2str(round(o.frac,2))];
-                o.text{13} = ['Atomnumber(FitX): ' num2str(round(atomnumberfit(1)))];
-                o.text{14} = ['Atomnumber(FitY): ' num2str(round(atomnumberfit(2)))];
+                o.text{9} = ['Temperature (T/Tf): ' num2str(round(o.tempF,2))];
+                o.text{10} = ['Cond. Fraction: ' num2str(round(o.frac,2))];
             end
         end
         
@@ -366,3 +355,4 @@ classdef InformationFigure < BaseFigure
     end
     
 end
+
