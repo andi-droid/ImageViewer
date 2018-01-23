@@ -171,20 +171,25 @@ classdef LiProtocol < handle
                     p.read(protocolFilename);
                     save(matFilename, 'p','-v7.3');
                 catch e
-                    fprintf('Error when reading %s:\n%s', protocolFilename, e.message);
+                    fprintf('Error when reading %s:\n%s', protocolFilename, e.message );
                 end
                 clear('p','d');
             end
         end
         
-    	function xml2matAgent(imageviewerpath, d)
-            %while(true)
-                %d = datestr(now,'yyyy_mm_dd');
+    	function xml2matAgent(imageviewerpath)
+            while(true)
+                d = datestr(now,'yyyy_mm_dd');
                 cpath = sprintf('%s%s%s%s%s%s%s', imageviewerpath,filesep,d(1:4),filesep,d(1:7),filesep,d(1:10));
                 %LiProtocol.copy(ciceropath,imageviewerpath)
                 LiProtocol.write(cpath)
                 pause(5);
-            %end
+            end
+        end
+        
+        function xml2matDay(imageviewerpath, d)
+            cpath = sprintf('%s%s%s%s%s%s%s', imageviewerpath,filesep,d(1:4),filesep,d(1:7),filesep,d(1:10));
+            LiProtocol.write(cpath)
         end
         
     end

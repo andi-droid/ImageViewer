@@ -65,7 +65,7 @@ classdef HistoryFigure < BaseFigure
                 
             else
                 integral = sum(sum(o.compositor.croppedimage));
-                o.compositor.atomnumberhistory(end+1) = integral;
+                o.compositor.atomnumberhistory(end+1) = integral*o.compositor.camera.Atomfaktor;
                 
                 o.compositor.widthhistoryx(end+1) = 0;
                 o.compositor.widthhistoryy(end+1) = 0;
@@ -98,7 +98,7 @@ classdef HistoryFigure < BaseFigure
         
         function processData(o)
             
-            o.integratedOD = o.compositor.atomnumberhistory*o.compositor.camera.Atomfaktor;
+            o.integratedOD = o.compositor.atomnumberhistory;
             o.widthx = o.compositor.widthhistoryx;
             o.widthy = o.compositor.widthhistoryy;
             o.centerx = o.compositor.oscillationx;
@@ -164,7 +164,7 @@ classdef HistoryFigure < BaseFigure
             grid(o.axes,'on');
             xlabel(o.axes,o.compositor.history_xlab);
             ylabel(o.axes,'Width');
-            o.axes.YLim = [0,300]; 
+            o.axes.YLim = [0,50]; 
             hold(o.axes,'off');
             else
             o.plot = plot(o.axes,o.xaxisdata, o.centerx,'+r');
@@ -173,7 +173,7 @@ classdef HistoryFigure < BaseFigure
             grid(o.axes,'on');
             xlabel(o.axes,o.compositor.history_xlab);
             ylabel(o.axes,'Position (px)');
-            o.axes.YLim = [120,170];
+            o.axes.YLim = [0,600];
             hold(o.axes,'off'); 
             end
         end
