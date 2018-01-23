@@ -103,7 +103,7 @@ classdef FitControlFigure < BaseFigure
                 else
                     o.startparams = newFitParams;
                     o.lowerbound = newlowerbound;
-                    o.lowerbound = newupperbound;
+                    o.upperbound = newupperbound;
                     
                 end
                 
@@ -155,7 +155,7 @@ classdef FitControlFigure < BaseFigure
                 else
                     o.startparams = newFitParams;
                     o.lowerbound = newlowerbound;
-                    o.lowerbound = newupperbound;
+                    o.upperbound = newupperbound;
                 end
                 %
                 [gfit,~] = lsqcurvefit(o.fitFct, o.startparams,o.xdata(1:end),o.ydata(1:end),o.lowerbound,o.upperbound,options);
@@ -207,7 +207,7 @@ classdef FitControlFigure < BaseFigure
                 else
                     o.startparams = newFitParams;
                     o.lowerbound = newlowerbound;
-                    o.lowerbound = newupperbound;
+                    o.upperbound = newupperbound;
                 end
                 %
                 [gfit,~] = lsqcurvefit(o.fitFct, o.startparams,o.xdata(1:end),o.ydata(1:end),o.lowerbound,o.upperbound,options);

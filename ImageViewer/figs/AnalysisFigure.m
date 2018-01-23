@@ -6,8 +6,10 @@ classdef AnalysisFigure < BaseFigure
         
         % Data
         ydata
+        ydata2 %second ydata axos for plot
         plotydata = []
-        plotxdata = []        
+        plotxdata = []
+        plotydata2 = []
         
         % Helper
         mask
@@ -21,6 +23,7 @@ classdef AnalysisFigure < BaseFigure
         % Plots
         plot2
         plot3
+        plot4
         ylab
         
 
@@ -40,6 +43,9 @@ classdef AnalysisFigure < BaseFigure
         function onUpdateAnalysisFigure(o,hsource,data)
             o.datestring = o.compositor.imageDirectory(end-9:end);
             o.ydata = [];
+            ydata2 = [];
+            o.ydata2 = [];
+            
             o.plotxdata = [];
             o.compositor.xdataanalysis = [];
             o.roicenter(1) = o.compositor.abscenter(1)-o.compositor.roi(1);
@@ -74,7 +80,21 @@ classdef AnalysisFigure < BaseFigure
 
                 o.ylab = 'Position (pixel)';
                 [atomnumber,position] = o.processGaussFit();
-                ydata = position;
+                ydata  = position(1,:);
+                ydata2 = position(2,:);
+                
+                elseif strcmp(o.compositor.analysismethod,'Position X')
+
+                o.ylab = 'Position (pixel)';
+                [atomnumber,position] = o.processGaussFit();
+                ydata  = position(1,:);
+                
+                elseif strcmp(o.compositor.analysismethod,'Position Y')
+
+                o.ylab = 'Position (pixel)';
+                [atomnumber,position] = o.processGaussFit();
+                ydata  = position(2,:);
+                
                 
             elseif strcmp(o.compositor.analysismethod,'Mask 1+2 BZ')
                 o.ylab = 'Population 1.BZ/(2.BZ)';
@@ -132,6 +152,7 @@ classdef AnalysisFigure < BaseFigure
             end
                 o.onChangeParameter();
                 o.ydata = ydata;
+                o.ydata2 = ydata2;
                 o.compositor.ydataanalysis = [];
                 %o.compositor.xdataanalysis = [];
                 o.compositor.ydataanalysis = o.ydata;
@@ -249,7 +270,7 @@ classdef AnalysisFigure < BaseFigure
                 a(2)= fitydata2(2).*sqrt(2*pi).*fitydata2(4);
                 atomnumber(i) = mean(a);
                 %position(i,:,:) = [fitydata(3);fitydata2(3)];
-                position(i) = [fitydata(3)];
+                position(:,i) = [fitydata(3); fitydata2(3)];
                 end
                 atomnumbermean = atomnumber;
 %                 position(i,:,:) = [fitydata(3);fitydata2(3)];
@@ -260,8 +281,10 @@ classdef AnalysisFigure < BaseFigure
         
             function processData(o)
                 o.plotydata = [];
+                o.plotydata2 = [];
                 o.plotxdata = [];
                 Cneu = [];
+                Cneu2 = [];
                 A = [];
                 if o.compositor.average
                     [A,ia,ib] =unique(o.compositor.xdataanalysis,'stable');
@@ -271,13 +294,19 @@ classdef AnalysisFigure < BaseFigure
                         % careful here xxx
                         sel = o.ydata(match);
                         Cneu(i) = mean(sel);
+                        
+                        if ~isempty(o.ydata2)
+                            sel2 = o.ydata2(match);
+                            Cneu2(i) = mean(sel2);
+                        end
                     end
                     
                     o.plotydata = Cneu;
+                    o.plotydata2 = Cneu2;
                     o.plotxdata = A;
                 else
                     o.plotydata = o.ydata;
-
+                        o.plotydata2 = o.ydata2;
                         o.plotxdata = o.compositor.xdataanalysis;
                 end
                 
@@ -381,13 +410,19 @@ classdef AnalysisFigure < BaseFigure
             delete(o.plot);
             delete(o.plot2);
             delete(o.plot3);
+            delete(o.plot4);
             o.processData();
             o.plot = plot(o.axes,o.plotxdata, o.plotydata,'ob');
+            if ~isempty(o.plotydata2)
+                hold(o.axes,'on')
+                o.plot4 = plot(o.axes,o.plotxdata, o.plotydata2,'or');
+                hold(o.axes,'off')
+            end
             grid(o.axes,'on');
             %xlabel(o.axes,'ID');
             xlabel(o.axes,o.compositor.analysis_xlab);
             ylabel(o.axes,o.ylab);
-            %o.axes.YLim = [-10,10];
+            %o.axes.YLim = [100,500];
         end
         
         function onReplotfit(o)

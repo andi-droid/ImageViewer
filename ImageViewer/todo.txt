@@ -1,0 +1,4 @@
+Change directory in month.
+Day+/- ?
+Button for save actual roi
+Exclude Analysis mode

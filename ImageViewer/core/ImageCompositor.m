@@ -34,6 +34,7 @@ classdef ImageCompositor < BaseFrame
         visacommand
         visacommandnumber
         visacommandnumber2
+        indexvariables
         
         
         
