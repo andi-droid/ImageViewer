@@ -269,19 +269,15 @@ classdef FilePickerFigure < BaseFigure
                 o.updateParameters();
                 last = numel(o.listbox.String);
                 o.listbox.Value = last;
+                try
                 o.onSelectionChange(o.listbox);
-            catch ME
-                if strcmp(ME.identifier,'MATLAB:badsubscript')
-                    o.compositor.imageDirectory = tempimagedirectory;
-                    errordlg('Directory contains no images. Try again')
-                else
+            catch
                 o.compositor.imageDirectory = tempimagedirectory;
                 o.updateParameters();
                 last = numel(o.listbox.String)
                 o.listbox.Value = last;
                 o.onSelectionChange(o.listbox);
                 errordlg('Error selecting directory. Try again')
-                end
             end
         end
         
@@ -464,19 +460,11 @@ classdef FilePickerFigure < BaseFigure
             year = [o.compositor.camera.basepath today(1:4) '/'];
             month = [year today(1:7) '/'];
             day = [month today];
-            try
             o.compositor.imageDirectory = day;
             o.updateParameters();
             last = numel(o.listbox.String);
             o.listbox.Value = last;
             o.onSelectionChange(o.listbox);
-            catch ME
-                if strcmp(ME.identifier,'MATLAB:badsubscript')
-                    errordlg('Directory contains no images. Try again')
-                else
-                    errordlg('Error could be anything!')
-                end
-            end
             
         end
         
@@ -496,17 +484,12 @@ classdef FilePickerFigure < BaseFigure
                     last = numel(o.listbox.String);
                     o.listbox.Value = last;
                     o.onSelectionChange(o.listbox);
-                catch ME
-                if strcmp(ME.identifier,'MATLAB:badsubscript')
-                    errordlg('Directory contains no images. Try again')
-                else
+                catch
                     o.onTodayBtnPush();
                     errordlg('This is the latest folder.');
                 end
-                   
-                end
             else
-                errordlg('First deactivate Contiuous Mode.');
+                errordlg('This is the latest folder.');
             end
         end
         
@@ -522,18 +505,10 @@ classdef FilePickerFigure < BaseFigure
                 o.compositor.imageDirectory(end-9:end) = o.daydownstr;
                 o.compositor.imageDirectory(end-17:end-11) = o.daydownstr(1:7);
                 o.compositor.imageDirectory(end-22:end-19) = o.daydownstr(1:4);
-                try
                 o.updateParameters();
                 last = numel(o.listbox.String);
                 o.listbox.Value = last;
                 o.onSelectionChange(o.listbox);
-                catch ME
-                    if strcmp(ME.identifier,'MATLAB:badsubscript')
-                        errordlg('Directory contains no images. Try again')
-                    else
-                        errordlg('Error could be anything!')
-                    end
-                end
             else
                 errordlg('First deactivate Contiuous Mode')
             end
