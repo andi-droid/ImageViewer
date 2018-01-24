@@ -18,6 +18,7 @@ classdef ImageCompositor < BaseFrame
         analysismethod = 'Atomnumber'
         average = 1
         selectedIDs = []
+        selectedIDsReal = []
         selectedIDsDefringe = []
         fitorcount = true
         

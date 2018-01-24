@@ -168,7 +168,7 @@ classdef AnalysisFigure < BaseFigure
             o.compositor.xdataanalysis= [];
              if strcmp(o.compositor.analysisstring,'ID')
                 o.compositor.analysis_xlab = 'ID';
-                o.compositor.xdataanalysis = o.compositor.selectedIDs;
+                o.compositor.xdataanalysis = o.compositor.selectedIDsReal;
 
             elseif strcmp(o.compositor.analysisstring,'Duration')
                 indexduration = o.compositor.indexslotduration;

@@ -254,7 +254,7 @@ classdef ImagePackageFigure < ImageBaseFigure
             o.axes.XLim = [1 o.compositor.roi(3)+1];
             o.axes.YLim = [1 o.compositor.roi(4)+1];
             if ~isempty(o.compositor.selectedIDs)
-            o.selectedImageID = o.compositor.selectedIDs(o.imageindex);
+            o.selectedImageID = o.compositor.selectedIDsReal(o.imageindex);
             set(o.text,'String',sprintf('Image  No. %d', o.selectedImageID))
             end
             %o.maskcounttext.String = o.text;
@@ -283,7 +283,7 @@ classdef ImagePackageFigure < ImageBaseFigure
             o.roicenter(1) = o.compositor.abscenter(1)-o.compositor.roi(1);
             o.roicenter(2) = o.compositor.abscenter(2)-o.compositor.roi(2);
             if ~isempty(o.compositor.selectedIDs)
-            o.selectedImageID = o.compositor.selectedIDs(o.imageindex);
+            o.selectedImageID = o.compositor.selectedIDsReal(o.imageindex);
             set(o.text,'String',sprintf('Image  No. %d', o.selectedImageID))
             end
             %                         o.axes.XLim = [1 size(o.image,2)];

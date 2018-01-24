@@ -451,6 +451,7 @@ classdef FilePickerFigure < BaseFigure
             o.selectedIDs = o.listbox.String(o.range);
             %IDrange = start:stop;
             o.compositor.selectedIDs = o.listbox.Value;
+            o.compositor.selectedIDsReal = str2double(o.selectedIDs);
             o.readoutData(o.range);
             
         end
