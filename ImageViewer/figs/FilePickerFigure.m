@@ -42,6 +42,7 @@ classdef FilePickerFigure < BaseFigure
         selectedIDs
         selectedIDsDefringe
         exposurecorrection = 1
+        range
         
         
         
@@ -212,13 +213,20 @@ classdef FilePickerFigure < BaseFigure
                 end
             else
                 o.selectedIDs = [];
-                o.selectedIDs = o.listbox.String(o.listbox.Value);
+                %o.selectedIDs = o.listbox.String(o.listbox.Value);
+                range = [];
+                range(1:numel(o.filenames)) = 0;
+                range(o.listbox.Value) = 1;
+                range = logical(range);
+                o.range = range;
+                o.selectedIDs = o.listbox.String(range);
                 
-                set(o.seldata1, 'String',o.listbox.Value(1)); 
-                set(o.seldata2, 'String',o.listbox.Value(end)); 
+                
+                set(o.seldata1, 'String',str2double(o.selectedIDs{1})); 
+                set(o.seldata2, 'String',str2double(o.selectedIDs{end})); 
                  
-                set(o.seldatadefringe1, 'String',o.listbox.Value(1)); 
-                set(o.seldatadefringe2, 'String',o.listbox.Value(end)); 
+                set(o.seldatadefringe1, 'String',o.selectedIDs{1}); 
+                set(o.seldatadefringe2, 'String',o.selectedIDs{end}); 
                 
             end
             
@@ -434,20 +442,16 @@ classdef FilePickerFigure < BaseFigure
 %             o.compositor.selectedIDs = IDrange;
 %             o.readoutData(range);
             %new implementation
-            %o.selectedIDs = [];
+            o.selectedIDs = [];
             o.compositor.imagepackagecropped = [];
             o.compositor.imagepackage = [];
             o.compositor.protocolpackage = [];
             start = str2double(o.seldata1.String);
             stop = str2double(o.seldata2.String);
-            range = [];
-            range(1:numel(o.filenames)) = 0;
-            range(o.listbox.Value) = 1;
-            range = logical(range);
-            o.selectedIDs = o.listbox.String(range);
+            o.selectedIDs = o.listbox.String(o.range);
             %IDrange = start:stop;
             o.compositor.selectedIDs = o.listbox.Value;
-            o.readoutData(range);
+            o.readoutData(o.range);
             
         end
         
