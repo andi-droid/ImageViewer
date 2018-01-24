@@ -419,7 +419,22 @@ classdef FilePickerFigure < BaseFigure
             %
             %             set(o.seldata1, 'String',o.selectedIDs{1});
             %             set(o.seldata2, 'String',o.selectedIDs{end});
-            o.selectedIDs = [];
+%             o.selectedIDs = [];
+%             o.compositor.imagepackagecropped = [];
+%             o.compositor.imagepackage = [];
+%             o.compositor.protocolpackage = [];
+%             start = str2double(o.seldata1.String);
+%             stop = str2double(o.seldata2.String);
+%             range = [];
+%             range(1:numel(o.filenames)) = 0;
+%             range(start:stop) = 1;
+%             range = logical(range);
+%             o.selectedIDs = o.listbox.String(range);
+%             IDrange = start:stop;
+%             o.compositor.selectedIDs = IDrange;
+%             o.readoutData(range);
+            %new implementation
+            %o.selectedIDs = [];
             o.compositor.imagepackagecropped = [];
             o.compositor.imagepackage = [];
             o.compositor.protocolpackage = [];
@@ -427,11 +442,11 @@ classdef FilePickerFigure < BaseFigure
             stop = str2double(o.seldata2.String);
             range = [];
             range(1:numel(o.filenames)) = 0;
-            range(start:stop) = 1;
+            range(o.listbox.Value) = 1;
             range = logical(range);
             o.selectedIDs = o.listbox.String(range);
-            IDrange = start:stop;
-            o.compositor.selectedIDs = IDrange;
+            %IDrange = start:stop;
+            o.compositor.selectedIDs = o.listbox.Value;
             o.readoutData(range);
             
         end
