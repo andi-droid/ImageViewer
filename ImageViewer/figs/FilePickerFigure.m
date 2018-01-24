@@ -225,8 +225,8 @@ classdef FilePickerFigure < BaseFigure
                 set(o.seldata1, 'String',str2double(o.selectedIDs{1})); 
                 set(o.seldata2, 'String',str2double(o.selectedIDs{end})); 
                  
-                set(o.seldatadefringe1, 'String',o.selectedIDs{1}); 
-                set(o.seldatadefringe2, 'String',o.selectedIDs{end}); 
+                set(o.seldatadefringe1, 'String',str2double(o.selectedIDs{1})); 
+                set(o.seldatadefringe2, 'String',str2double(o.selectedIDs{end})); 
                 
             end
             
@@ -465,14 +465,10 @@ classdef FilePickerFigure < BaseFigure
             o.selectedIDsDefringe = [];
             start = str2double(o.seldatadefringe1.String);
             stop = str2double(o.seldatadefringe2.String);
-            range = [];
-            range(1:numel(o.filenames)) = 0;
-            range(start:stop) = 1;
-            range = logical(range);
-            o.selectedIDsDefringe = o.listbox.String(range);
-            IDrange = start:stop;
+            o.selectedIDsDefringe = o.listbox.String(o.range);
+            %IDrange = start:stop;
             o.compositor.selectedIDsDefringe = IDrange;
-            o.readoutDataDefringe(range);
+            o.readoutDataDefringe(o.range);
             
         end
         

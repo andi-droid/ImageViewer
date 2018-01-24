@@ -6,11 +6,13 @@ classdef ImagePackageFigure < ImageBaseFigure
         maskbtn
         popupmasks
         cmapslider
+        text
         % Data
         image
         maskedimage
         maxcount
         imagepackage
+        selectedImageID
         
         % Helper
         maskstate = false
@@ -145,11 +147,13 @@ classdef ImagePackageFigure < ImageBaseFigure
                 if eventdata.VerticalScrollCount < 0
                     if o.imageindex < size(o.imagepackage,1)
                         o.imageindex = o.imageindex +1;
+                        
                         o.onRedraw();
                     end
                 else
                     if o.imageindex > 1
                         o.imageindex = o.imageindex -1;
+                        
                         o.onRedraw();
                     end
                 end
@@ -168,6 +172,10 @@ classdef ImagePackageFigure < ImageBaseFigure
             addlistener(o.compositor, 'addPointer', @o.addPointer);
             addlistener(o.compositor, 'deletePointer', @o.deletePointer);
             o.registerCurrentCoordinateListener();
+            
+            o.text = uicontrol(o.figure, 'Style', 'text', 'String', '',...
+                'Units', 'normalized',...
+                'Position', [0.3 0.95 0.4 0.05]);
             
             
             o.zoombtn = uicontrol(o.figure, 'Style', 'togglebutton', 'String', 'Zoom',...
@@ -243,11 +251,12 @@ classdef ImagePackageFigure < ImageBaseFigure
             %imscrollpanel(o.figure,o.plot);
             %o.axes.XLim = [1 size(o.image,2)];
             %o.axes.YLim = [1 size(o.image,1)];
-            
             o.axes.XLim = [1 o.compositor.roi(3)+1];
             o.axes.YLim = [1 o.compositor.roi(4)+1];
-            
-            
+            if ~isempty(o.compositor.selectedIDs)
+            o.selectedImageID = o.compositor.selectedIDs(o.imageindex);
+            set(o.text,'String',sprintf('Image  No. %d', o.selectedImageID))
+            end
             %o.maskcounttext.String = o.text;
         end
         
@@ -273,7 +282,10 @@ classdef ImagePackageFigure < ImageBaseFigure
             %o.roicenter(2) = size(o.image,1)/2;
             o.roicenter(1) = o.compositor.abscenter(1)-o.compositor.roi(1);
             o.roicenter(2) = o.compositor.abscenter(2)-o.compositor.roi(2);
-            
+            if ~isempty(o.compositor.selectedIDs)
+            o.selectedImageID = o.compositor.selectedIDs(o.imageindex);
+            set(o.text,'String',sprintf('Image  No. %d', o.selectedImageID))
+            end
             %                         o.axes.XLim = [1 size(o.image,2)];
             %             o.axes.YLim = [1 size(o.image,1)];
             %o.maskcounttext.String = o.text;
