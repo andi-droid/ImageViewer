@@ -1,9 +1,10 @@
-classdef ImageFigure < ImageBaseFigure
+ classdef ImageFigure < ImageBaseFigure
     properties
         % GUI elements
         roiRect
         overlaybtn
         zoombtn
+        saverectbtn
         centeredits
         layout
         % Data
@@ -62,6 +63,11 @@ classdef ImageFigure < ImageBaseFigure
             end
         end
         
+         function onSaveRectPush(o,hObject,callbackdata)
+             rect = o.compositor.roi;
+             save('ROI.mat','rect');
+        end
+        
         % implementing BaseFigure
         function onCreate(o)
             C = get(0, 'DefaultUIControlBackgroundColor');
@@ -87,6 +93,12 @@ classdef ImageFigure < ImageBaseFigure
                 'Position', [0.2 0.0 0.25 0.1],...
                 'Value', 0,...
                 'Callback', @o.onOverlayPush);
+            
+            o.saverectbtn = uicontrol(o.figure, 'Style', 'pushbutton', 'String', 'Save Rect',...
+                'Units', 'normalized',...
+                'Position', [0.4 0.9 0.2 0.1],...
+                'Value', 0,...
+                'Callback', @o.onSaveRectPush);
             
             o.zoombtn = uicontrol(o.figure, 'Style', 'togglebutton', 'String', 'Zoom',...
                 'Units', 'normalized',...

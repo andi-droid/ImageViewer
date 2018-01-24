@@ -265,7 +265,7 @@ classdef FitControlFigure < BaseFigure
                 
                 
                 xdata = unique(o.xdata);
-                o.compositor.analysisplotfitdatax = xdata(1):0.00001:xdata(end);
+                o.compositor.analysisplotfitdatax = linspace(xdata(1),xdata(end),1000);
                 o.compositor.analysisplotfitdatay = o.fitFct(o.fitdata,o.compositor.analysisplotfitdatax);
                 
                 o.onUpdateFitResults();

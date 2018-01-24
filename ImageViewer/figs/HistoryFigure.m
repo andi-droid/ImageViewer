@@ -4,6 +4,7 @@ classdef HistoryFigure < BaseFigure
         togglefitorcount
         clearbtn
         popupanalysis
+        radios
         
         % Data
         integratedOD
@@ -81,14 +82,29 @@ classdef HistoryFigure < BaseFigure
             o.onReplot();
         end
         
-        function onTogglefitorcountUpdate(o,hsource,data)
-            if o.togglefitorcount.Value == 1;
-                o.compositor.fitorcount = true;
-                o.togglefitorcount.String = 'Fit';
-            else
-                o.compositor.fitorcount = false;
-                o.togglefitorcount.String = 'Count/Mean';
+%         function onTogglefitorcountUpdate(o,hsource,data)
+%             if o.togglefitorcount.Value == 1;
+%                 o.compositor.fitorcount = true;
+%                 o.togglefitorcount.String = 'Fit';
+%             else
+%                 o.compositor.fitorcount = false;
+%                 o.togglefitorcount.String = 'Count/Mean';
+%             end
+%         end
+        
+        function onRadioClick(o,hSource,callbackdata,iRadio)
+            for i = 1:2
+                set(o.radios(i), 'Value', i==iRadio);
             end
+            
+            if get(o.radios(1),'Value')
+                o.compositor.fitorcount = true;
+            elseif get(o.radios(2),'Value')
+                o.compositor.fitorcount = false;
+            end
+            
+            notify(o.compositor,'updateData');
+            
         end
         
         function setAnalysisMethod(o,hSource,data)
@@ -139,12 +155,23 @@ classdef HistoryFigure < BaseFigure
                 'Position', [0.4 0.95 0.2 0.05],...
                 'Callback', @o.setAnalysisMethod);
             
-            o.togglefitorcount = uicontrol('Style','toggle',...
-                'Units', 'normalized',...
-                'String',{'Fit'},...
-                'Position',[0.8 0.0 0.2 0.05],...
-                'Value',1,...
-                'Callback', @o.onTogglefitorcountUpdate);
+%             o.togglefitorcount = uicontrol('Style','toggle',...
+%                 'Units', 'normalized',...
+%                 'String',{'Fit'},...
+%                 'Position',[0.8 0.0 0.2 0.05],...
+%                 'Value',1,...
+%                 'Callback', @o.onTogglefitorcountUpdate);
+            
+            radioLabels = {'Fit','Counts'};
+            value = find(strcmp(radioLabels,o.compositor.camera.species)==1);
+            for iRadio=1:numel(radioLabels)
+                o.radios(iRadio) = uicontrol(o.figure, 'Style', 'radiobutton', ...
+                    'Callback', {@o.onRadioClick, iRadio}, ...
+                    'Units',    'normalized', ...
+                    'Position', [0.6+(iRadio*0.1) 0.95 0.2 0.05], ...
+                    'String',   radioLabels{iRadio}, ...
+                    'Value',    iRadio==1);
+            end
             
             
         end
@@ -152,11 +179,11 @@ classdef HistoryFigure < BaseFigure
         function onReplot(o)
             o.processData();
             if o.popupanalysis.Value == 1
-            o.plot = plot(o.axes,o.xaxisdata, o.integratedOD,'or');
+            o.plot = plot(o.axes,o.xaxisdata, o.integratedOD,'.r');
             grid(o.axes,'on');
             xlabel(o.axes,o.compositor.history_xlab);
             ylabel(o.axes,'Atomnumber');
-            o.axes.YLim = [0,8000000];
+            o.axes.YLim = [0,800000];
             elseif o.popupanalysis.Value == 2
             o.plot = plot(o.axes,o.xaxisdata, o.widthx,'or');
             hold(o.axes,'on');
@@ -173,7 +200,7 @@ classdef HistoryFigure < BaseFigure
             grid(o.axes,'on');
             xlabel(o.axes,o.compositor.history_xlab);
             ylabel(o.axes,'Position (px)');
-            o.axes.YLim = [0,600];
+            o.axes.YLim = [50,170];
             hold(o.axes,'off'); 
             end
         end
