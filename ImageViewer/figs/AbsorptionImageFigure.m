@@ -38,6 +38,8 @@ classdef AbsorptionImageFigure < ImageBaseFigure
             o.tb  = uicontrol('style','text', 'Parent', o.figure,'Units', 'normalized', 'Position', [0.25 0.8 0.45 0.15]);
             o.axes.Visible = 'off';
             set(o.tb,'String','Info');
+            
+            addlistener(o.compositor, 'updateAxes', @o.onUpdateAxesEvent);
 
         end
         

@@ -59,6 +59,7 @@ classdef FilePickerFigure < BaseFigure
         % callbacks
         function o = onSelectionChange(o, source,callbackdata)
             if o.listbox.Max == 1
+                tempsizeimage = size(o.compositor.image);
                 o.compositor.plotfitdatax = [];
                 o.compositor.plotfitdatay = [];
                 o.compositor.currentabsorptionimage = o.filenamesabs{o.indeximage(source.Value)};
@@ -170,6 +171,7 @@ classdef FilePickerFigure < BaseFigure
                         o.compositor.image = od(ref,abs);
                     end
                 end
+                newsizeimage = size(o.compositor.image);
                 
                 datestring = o.compositor.imageDirectory(end-22:end);
                 datestringreduced = datestring(end-9:end);
@@ -197,6 +199,7 @@ classdef FilePickerFigure < BaseFigure
                 
                 o.compositor.cutOD = o.compositor.croppedimage(floor(o.compositor.roi(4)/2),:);
                 
+                
                 if o.compositor.fitbuttonstate
                     notify(o.compositor,'doFit');
                 end
@@ -204,9 +207,10 @@ classdef FilePickerFigure < BaseFigure
                 
                 notify(o.compositor, 'updateData');
                 
-                if o.compositor.camerachange
+                if o.compositor.camerachange | (tempsizeimage ~= newsizeimage)
                     notify(o.compositor, 'updateAxes');
                 end
+                
                 
                 if switchroi
                     notify(o.compositor, 'updateDataAndResolution');

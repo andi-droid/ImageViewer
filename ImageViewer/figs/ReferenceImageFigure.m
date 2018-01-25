@@ -25,6 +25,8 @@ classdef ReferenceImageFigure < ImageBaseFigure
         function onCreate(o)
                 C = get(0, 'DefaultUIControlBackgroundColor');
                 set(o.figure, 'Color', C)
+                
+                addlistener(o.compositor, 'updateAxes', @o.onUpdateAxesEvent);
 
         end
         
