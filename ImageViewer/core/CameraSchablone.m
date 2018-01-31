@@ -18,15 +18,17 @@ classdef Camera < Camera_Default
             o.protocolpath = '//192.168.1.6/d/Data/ExpProtocols/';
             o.protocolfile = '//192.168.1.6/d/Data/ExpProtocols/%s\\Protocol-%s_%s.xml';
             o.imageDirectoryNode = 'D:\\Data/absimg/2018/';
-            o.roi = [270    314   323   305]; % begin roi
-            o.abscenter = [165,147];
-            o.defringeatoms = [151 186 597 528];     %defringe atoms only, needed for background zero
-            o.defringeroi = [97 141 788 747];        %defringe roi larger than atoms, needed for background zero
-            
             o.defRectsPath = './roi_defringe.mat';
             
             % Lithium camera properties
             if strcmp(ID,'0') % Pixelfly QE / Parameter anpassen!
+                
+                o.roi = [270    314   323   305]; % begin roi
+                o.abscenter = [165,147];
+                o.defringeatoms = [151 186 597 528];     %defringe atoms only, needed for background zero
+                o.defringeroi = [97 141 788 747];        %defringe roi larger than atoms, needed for background zero
+       
+                
                 o.PixSize = 6.45E-6; % Pixel Size in m
                 o.magnification   = 100/250; % 4f image: f1 = 250 mm, f2 = 100 mm
                 o.C_F = 3.8; % A/D conversion factor
@@ -45,6 +47,13 @@ classdef Camera < Camera_Default
                 o.Atomfaktor = (o.PixSize.^2/o.magnification.^2) .* 2 .* pi .* (1+ 4.*(o.Detuning.^2/o.Gamma.^2)) ./ (3.*o.Lambda.^2);
             
             elseif strcmp(ID,'1') % Pixelfly QE /Parameter anpassen!
+                
+                o.roi = [270    314   323   305]; % begin roi
+                o.abscenter = [165,147];
+                o.defringeatoms = [151 186 597 528];     %defringe atoms only, needed for background zero
+                o.defringeroi = [97 141 788 747];        %defringe roi larger than atoms, needed for background zero
+       
+                
                 o.PixSize = 6.45E-6; % Pixel Size in m
                 o.magnification   = 100/250; % 4f image: f1 = 250 mm, f2 = 100 mm
                 o.C_F = 3.8; % A/D conversion factor
@@ -63,6 +72,13 @@ classdef Camera < Camera_Default
                 o.Atomfaktor = (o.PixSize.^2/o.magnification.^2) .* 2 .* pi .* (1+ 4.*(o.Detuning.^2/o.Gamma.^2)) ./ (3.*o.Lambda.^2);
                 
             elseif strcmp(ID,'2') % Pixelfly QE / Parameter anpassen!
+                
+                o.roi = [270    314   323   305]; % begin roi
+                o.abscenter = [165,147];
+                o.defringeatoms = [151 186 597 528];     %defringe atoms only, needed for background zero
+                o.defringeroi = [97 141 788 747];        %defringe roi larger than atoms, needed for background zero
+                     
+                
                 o.PixSize = 6.45E-6; % Pixel Size in m
                 o.magnification   = 300/150; %; % 4f image: f1 = 150 mm, f2 = 300 mm
                 o.C_F = 3.8; % A/D conversion factor
@@ -81,6 +97,13 @@ classdef Camera < Camera_Default
                 o.Atomfaktor = (o.PixSize.^2/o.magnification.^2) .* 2 .* pi .* (1+ 4.*(o.Detuning.^2/o.Gamma.^2)) ./ (3.*o.Lambda.^2);
 
             elseif strcmp(ID,'3') %Andor LA / Paramter anpassen
+       
+            
+                o.roi = [270    314   323   305]; % begin roi
+                o.abscenter = [165,147];
+                o.defringeatoms = [151 186 597 528];     %defringe atoms only, needed for background zero
+                o.defringeroi = [97 141 788 747];        %defringe roi larger than atoms, needed for background zero
+                                      
                 o.PixSize = 13E-6;
                 o.magnification   = 2.15;
                 o.C_F = 4*2800/2200*0.76;

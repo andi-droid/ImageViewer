@@ -240,6 +240,7 @@ classdef AnalysisFigure < BaseFigure
         function [atomnumbermean, position] = processGaussFit(o)
             
                 options = optimset('Display','off');
+                atomnumber = zeros(size(o.compositor.imagepackagecropped,1));
                 for i = 1: size(o.compositor.imagepackagecropped,1)
                     
                     datacroppedx = sum(squeeze(o.compositor.imagepackagecropped(i,:,:)),1);
