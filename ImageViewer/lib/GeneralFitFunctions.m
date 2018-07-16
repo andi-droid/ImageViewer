@@ -44,7 +44,9 @@
                 
                 o.paramNames =         {'offset',   'amp1',   'res1',   'sig1'   };
                 
-                o.startParams = double([     mean(o.ydata);   max(o.ydata);  mean(o.xdata);  mean(o.xdata)./10 ]);
+                [ymax,ymaxind] = max(o.ydata);
+                
+                o.startParams = double([     mean(o.ydata);   ymax;  o.xdata(ymaxind) ;  mean(o.xdata)./100]);
                 o.lowerBound  = double([    0;   0;      0;   0 ]);
                 o.upperBound  = double([     max(o.ydata);    3*max(o.ydata);  max(o.xdata);  mean(o.xdata) ]);
                 

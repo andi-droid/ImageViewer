@@ -239,29 +239,29 @@ classdef AnalysisFigure < BaseFigure
         
         function [atomnumbermean, position] = processGaussFit(o)
             
-                options = optimset('Display','off');
-                atomnumber = zeros(size(o.compositor.imagepackagecropped,1));
-                for i = 1: size(o.compositor.imagepackagecropped,1)
-                    
-                    datacroppedx = sum(squeeze(o.compositor.imagepackagecropped(i,:,:)),1);
-                    datacroppedy = sum(squeeze(o.compositor.imagepackagecropped(i,:,:)),2);
+            options = optimset('Display','off');
+            atomnumber = zeros(size(o.compositor.imagepackagecropped,1));
+            for i = 1: size(o.compositor.imagepackagecropped,1)
                 
-                    ydata = (datacroppedx(:))';
-                    xdata = 1:numel(ydata);
+                datacroppedx = sum(squeeze(o.compositor.imagepackagecropped(i,:,:)),1);
+                datacroppedy = sum(squeeze(o.compositor.imagepackagecropped(i,:,:)),2);
                 
-                    ydata2 = (datacroppedy(:))';
-                    xdata2 = 1:numel(ydata2);
+                ydata = (datacroppedx(:))';
+                xdata = 1:numel(ydata);
                 
-                    fit = GeneralFitFunctions('Gauss',xdata,ydata);
-                    fit2 = GeneralFitFunctions('Gauss',xdata2,ydata2);
-
-                     startparams = fit.startParams;
-                    startparams2 = fit2.startParams;
+                ydata2 = (datacroppedy(:))';
+                xdata2 = 1:numel(ydata2);
                 
-
-
-                    
-
+                fit = GeneralFitFunctions('Gauss',xdata,ydata);
+                fit2 = GeneralFitFunctions('Gauss',xdata2,ydata2);
+                
+                startparams = fit.startParams;
+                startparams2 = fit2.startParams;
+                
+                
+                
+                
+                
                 
                 [gfity,~] = lsqcurvefit(fit.fitFunction, startparams,xdata(1:end),ydata(1:end),[],[],options);
                 [gfity2,~] = lsqcurvefit(fit.fitFunction, startparams2,xdata2(1:end),ydata2(1:end),[],[],options);
@@ -272,11 +272,11 @@ classdef AnalysisFigure < BaseFigure
                 atomnumber(i) = mean(a);
                 %position(i,:,:) = [fitydata(3);fitydata2(3)];
                 position(:,i) = [fitydata(3); fitydata2(3)];
-                end
-                atomnumbermean = atomnumber;
-%                 position(i,:,:) = [fitydata(3);fitydata2(3)];
-                
             end
+            atomnumbermean = atomnumber;
+            %                 position(i,:,:) = [fitydata(3);fitydata2(3)];
+            
+        end
         
         
         

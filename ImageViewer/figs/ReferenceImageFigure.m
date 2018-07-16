@@ -43,14 +43,14 @@ classdef ReferenceImageFigure < ImageBaseFigure
             o.axes.YLim = [1 o.sizeofimg(1)];
             end
             colormap(o.axes,o.wjet);
-            o.clims = [-5000,15000];
+            o.clims = [0,500];
             set(o.axes, 'CLim', o.clims);
             o.axes.Visible = 'off';
             axis(o.axes,'equal');
         end
         
         function onRedraw(o)
-            o.processData();
+            o.onReplot();
             o.plot.CData = o.image;
             %o.title.String = sprintf('time: %d, hauke: %d, run: %d', o.t, o.frequency, o.run);
         end

@@ -19,6 +19,11 @@ classdef AnalysisFramework
                 LeastSquareProjector.vectorFromCoefficients(c, references.getRawData()));
             %toc
         end
+
+        % MAYBE ADD FLUORESCENCE IMAGING ONE DAY?
+%         function res = Fluorescence(reference, atoms)
+%             res = atoms-reference;
+%         end
         
         function res = OD(references, atoms)            
                 function res = od(r,a)

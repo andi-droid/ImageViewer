@@ -143,9 +143,9 @@ classdef InformationFigure < BaseFigure
                 o.compositor.fitdatay=gfity2;
                 o.compositor.plotfitdatax = o.fitFct(o.fitydata,sort(o.xdata));
                 o.compositor.plotfitdatay = o.fitFct(o.fitydata2,sort(o.xdata2));
-                a(1)= o.compositor.fitdatax(2).*sqrt(2*pi).*o.compositor.fitdatax(4);
-                a(2)= o.compositor.fitdatay(2).*sqrt(2*pi).*o.compositor.fitdatay(4);
-                o.compositor.atomnumberfitmean = mean(a);
+%                 a(1)= o.compositor.fitdatax(2).*sqrt(2*pi).*o.compositor.fitdatax(4);
+%                 a(2)= o.compositor.fitdatay(2).*sqrt(2*pi).*o.compositor.fitdatay(4);
+%                 o.compositor.atomnumberfitmean = mean(a);
 				notify(o.compositor, 'updateFitResults');
             end
             
@@ -164,6 +164,7 @@ classdef InformationFigure < BaseFigure
                 BECFity = sum(o.BECFit,2);
                 o.compositor.plotfitdatax = BECFitx;
                 o.compositor.plotfitdatay = BECFity;
+                o.compositor.frac=round(o.frac,2);
                 fprintf('Fitting took %d \n', toc);
                 notify(o.compositor, 'updateFitResults');
             end

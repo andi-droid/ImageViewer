@@ -7,6 +7,7 @@ classdef AbsorptionImageFigure < ImageBaseFigure
         % Data
         image
         sizeofimg
+        roi
         
         % Helper
         wjet
@@ -45,6 +46,7 @@ classdef AbsorptionImageFigure < ImageBaseFigure
         
         function onReplot(o)
             o.processData();
+            o.roi = o.compositor.roi;
             o.tb.String = o.text;
             o.imageF(o.image);
             %o.title = title(o.axes, num2str(o.t));
@@ -55,9 +57,10 @@ classdef AbsorptionImageFigure < ImageBaseFigure
             else
             o.axes.XLim = [1 o.sizeofimg(2)];
             o.axes.YLim = [1 o.sizeofimg(1)];
+            disp(o.compositor.roi);
             end
             colormap(o.axes,o.wjet);
-            o.clims = [-5000,15000];
+            o.clims = [0,500];
             set(o.axes, 'CLim', o.clims);
             o.axes.Visible = 'off';
             axis(o.axes,'equal');
@@ -65,7 +68,7 @@ classdef AbsorptionImageFigure < ImageBaseFigure
         end
         
         function onRedraw(o)
-            o.processData();
+            o.onReplot();
             o.tb.String = o.text;
             o.plot.CData = o.image;
             %o.title.String = sprintf('time: %d, hauke: %d, run: %d', o.t, o.frequency, o.run);

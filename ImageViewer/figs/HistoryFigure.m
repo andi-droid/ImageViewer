@@ -55,7 +55,12 @@ classdef HistoryFigure < BaseFigure
             
             if o.compositor.fitorcount
                 
-                o.compositor.atomnumberhistory(end+1) = o.compositor.atomnumberfitmean;
+                % HERE YOU CAN DECIDE WETHER YOU LOOK AT ONLY ONE
+                % DIRECTION AK 20180307
+                
+                o.compositor.atomnumberhistory(end+1)   = o.compositor.atomnumberfitmean;
+                %o.compositor.atomnumberhistory(end+1)  = o.compositor.atomsx;
+                %o.compositor.atomnumberhistory(end+1)  = o.compositor.atomsy;
                 
                 o.compositor.widthhistoryx(end+1) = o.compositor.fitdatax(4);
                 o.compositor.widthhistoryy(end+1) = o.compositor.fitdatay(4);
@@ -179,11 +184,12 @@ classdef HistoryFigure < BaseFigure
         function onReplot(o)
             o.processData();
             if o.popupanalysis.Value == 1
-            o.plot = plot(o.axes,o.xaxisdata, o.integratedOD,'.r');
+            o.plot = plot(o.axes,o.xaxisdata, o.integratedOD,'or');
             grid(o.axes,'on');
             xlabel(o.axes,o.compositor.history_xlab);
             ylabel(o.axes,'Atomnumber');
-            o.axes.YLim = [0,800000];
+            o.axes.YLim = [00000,1.5e8];
+           %o.axes.YLim = [00000,1];
             elseif o.popupanalysis.Value == 2
             o.plot = plot(o.axes,o.xaxisdata, o.widthx,'or');
             hold(o.axes,'on');
@@ -200,7 +206,7 @@ classdef HistoryFigure < BaseFigure
             grid(o.axes,'on');
             xlabel(o.axes,o.compositor.history_xlab);
             ylabel(o.axes,'Position (px)');
-            o.axes.YLim = [50,170];
+            o.axes.YLim = [0,1500];
             hold(o.axes,'off'); 
             end
         end
