@@ -57,10 +57,12 @@ classdef AbsorptionImageFigure < ImageBaseFigure
             else
             o.axes.XLim = [1 o.sizeofimg(2)];
             o.axes.YLim = [1 o.sizeofimg(1)];
-            disp(o.compositor.roi);
+            %disp(o.compositor.roi);
             end
             colormap(o.axes,o.wjet);
-            o.clims = [0,500];
+            o.clims = [0,800];
+            o.clims = [0,17000];%For Pixelfly USB
+            
             set(o.axes, 'CLim', o.clims);
             o.axes.Visible = 'off';
             axis(o.axes,'equal');
