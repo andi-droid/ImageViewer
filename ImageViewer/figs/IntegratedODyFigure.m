@@ -28,7 +28,7 @@ classdef IntegratedODyFigure < BaseFigure
         
         function onReplot(o)
             o.processData();
-            o.plot = plot(o.axes, o.integratedOD,'-b',...
+            o.plot = plot(o.axes, o.integratedOD,'-k',...
                 'Linewidth',1.5);
             axis(o.axes,'tight');
             grid(o.axes,'on');

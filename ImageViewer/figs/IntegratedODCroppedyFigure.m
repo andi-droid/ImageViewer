@@ -33,11 +33,11 @@ classdef IntegratedODCroppedyFigure < BaseFigure
         
         function onReplot(o)
             o.processData();
-            o.plot = plot(o.axes, o.integratedOD,'-b',...
+            o.plot = plot(o.axes, o.integratedOD,'-k',...
                 'Linewidth',1.5);
             hold(o.axes,'on');
             if o.compositor.plotfitstate
-                o.plot = plot(o.axes, o.compositor.plotfitdatay,'-r',...
+                o.plot = plot(o.axes, o.compositor.plotfitdatay,'-.b',...
                     'Linewidth',1.5);
             end
             view(o.axes,[90,90])
