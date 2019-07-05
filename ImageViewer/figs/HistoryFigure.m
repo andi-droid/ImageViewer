@@ -184,30 +184,33 @@ classdef HistoryFigure < BaseFigure
         function onReplot(o)
             o.processData();
             if o.popupanalysis.Value == 1
-            o.plot = plot(o.axes,o.xaxisdata, o.integratedOD,'or');
-            grid(o.axes,'on');
-            xlabel(o.axes,o.compositor.history_xlab);
-            ylabel(o.axes,'Atomnumber');
-            o.axes.YLim = [00000,1.5e8];
-           %o.axes.YLim = [00000,1];
+                o.plot = plot(o.axes,o.xaxisdata, o.integratedOD,'or');
+                grid(o.axes,'on');
+                xlabel(o.axes,o.compositor.history_xlab);
+                ylabel(o.axes,'Atomnumber');
+                o.axes.YScale = 'lin';
+                %o.axes.YLim = [0,2e8];
+                %o.axes.YLim = [0,20e7];
             elseif o.popupanalysis.Value == 2
-            o.plot = plot(o.axes,o.xaxisdata, o.widthx,'or');
-            hold(o.axes,'on');
-            o.plot2 = plot(o.axes,o.xaxisdata, o.widthy,'ob');
-            grid(o.axes,'on');
-            xlabel(o.axes,o.compositor.history_xlab);
-            ylabel(o.axes,'Width');
-            o.axes.YLim = [0,50]; 
-            hold(o.axes,'off');
+                o.plot = plot(o.axes,o.xaxisdata, o.widthx,'or');
+                hold(o.axes,'on');
+                o.plot2 = plot(o.axes,o.xaxisdata, o.widthy,'ob');
+                grid(o.axes,'on');
+                xlabel(o.axes,o.compositor.history_xlab);
+                ylabel(o.axes,'Width');
+                o.axes.YScale = 'lin';
+                o.axes.YLim = [45,200];
+                hold(o.axes,'off');
             else
-            o.plot = plot(o.axes,o.xaxisdata, o.centerx,'+r');
-            hold(o.axes, 'on');
-            o.plot2 = plot(o.axes,o.xaxisdata, o.centery,'+b');
-            grid(o.axes,'on');
-            xlabel(o.axes,o.compositor.history_xlab);
-            ylabel(o.axes,'Position (px)');
-            o.axes.YLim = [0,1500];
-            hold(o.axes,'off'); 
+                o.plot = plot(o.axes,o.xaxisdata, o.centerx,'+r');
+                hold(o.axes, 'on');
+                o.plot2 = plot(o.axes,o.xaxisdata, o.centery,'+b');
+                grid(o.axes,'on');
+                xlabel(o.axes,o.compositor.history_xlab);
+                ylabel(o.axes,'Position (px)');
+                o.axes.YScale = 'lin';
+                o.axes.YLim = [0,400];
+                hold(o.axes,'off');
             end
         end
         
