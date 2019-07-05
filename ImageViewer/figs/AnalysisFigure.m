@@ -26,9 +26,9 @@ classdef AnalysisFigure < BaseFigure
         plot4
         ylab
         
-
-
-
+        
+        
+        
     end
     
     methods
@@ -51,72 +51,72 @@ classdef AnalysisFigure < BaseFigure
             o.roicenter(1) = o.compositor.abscenter(1)-o.compositor.roi(1);
             o.roicenter(2) = o.compositor.abscenter(2)-o.compositor.roi(2);
             
-            if strcmp(o.compositor.analysismethod,'Atomnumber') 
-%             for i = 1: size(o.compositor.imagepackagecropped,1)
-%                 image = o.compositor.imagepackagecropped(i,:,:);
-%                 ydata(i) = sum(sum(image));
-%             end
-            o.ylab = 'Atomnumber ';
-            [atomnumber,position] = o.processGaussFit();
-            for i = 1: size(o.compositor.imagepackagecropped,1)
-                image = squeeze(o.compositor.imagepackagecropped(i,:,:));
-                atomnumber2(i) = sum(sum(image));
-            end
-            %ydata = atomnumber.*o.compositor.camera.Atomfaktor;
-            ydata = atomnumber2.*o.compositor.camera.Atomfaktor;
-            
+            if strcmp(o.compositor.analysismethod,'Atomnumber')
+                %             for i = 1: size(o.compositor.imagepackagecropped,1)
+                %                 image = o.compositor.imagepackagecropped(i,:,:);
+                %                 ydata(i) = sum(sum(image));
+                %             end
+                o.ylab = 'Atomnumber ';
+                [atomnumber,position,width] = o.processGaussFit();
+                for i = 1: size(o.compositor.imagepackagecropped,1)
+                    image = squeeze(o.compositor.imagepackagecropped(i,:,:));
+                    atomnumber2(i) = sum(sum(image));
+                end
+                %ydata = atomnumber.*o.compositor.camera.Atomfaktor;
+                ydata = atomnumber2.*o.compositor.camera.Atomfaktor;
+                
             elseif strcmp(o.compositor.analysismethod,'Position')
-%                 for i = 1: size(o.compositor.imagepackagecropped,1)
-%                 x = 1:size(o.compositor.imagepackagecropped,3);
-%                 o.y = 1:size(o.compositor.imagepackagecropped,2);
-%                 datacroppedx = sum(squeeze(o.compositor.imagepackagecropped(i,:,:)),1);
-%                 datacroppedy = sum(squeeze(o.compositor.imagepackagecropped(i,:,:)),2);
-%                 centerofmassx = sum(datacroppedx*x')/sum(datacroppedx);
-%                 centerofmassy = sum(o.datacroppedy.*y')/sum(datacroppedy);
-% 
-%                     ydata(i) = centerofmassx;
-% 
-%                 end
-
-                o.ylab = 'Position (pixel)';
-                [atomnumber,position] = o.processGaussFit();
-                ydata  = position(1,:);
-                ydata2 = position(2,:);
+                %                 for i = 1: size(o.compositor.imagepackagecropped,1)
+                %                 x = 1:size(o.compositor.imagepackagecropped,3);
+                %                 o.y = 1:size(o.compositor.imagepackagecropped,2);
+                %                 datacroppedx = sum(squeeze(o.compositor.imagepackagecropped(i,:,:)),1);
+                %                 datacroppedy = sum(squeeze(o.compositor.imagepackagecropped(i,:,:)),2);
+                %                 centerofmassx = sum(datacroppedx*x')/sum(datacroppedx);
+                %                 centerofmassy = sum(o.datacroppedy.*y')/sum(datacroppedy);
+                %
+                %                     ydata(i) = centerofmassx;
+                %
+                %                 end
                 
-                elseif strcmp(o.compositor.analysismethod,'Position X')
-
                 o.ylab = 'Position (pixel)';
-                [atomnumber,position] = o.processGaussFit();
-                ydata  = position(1,:);
+                [atomnumber,position,width] = o.processGaussFit();
+                ydata  = position(:,1);
+                ydata2 = position(:,1);
                 
-                elseif strcmp(o.compositor.analysismethod,'Position Y')
-
+            elseif strcmp(o.compositor.analysismethod,'Position X')
+                
                 o.ylab = 'Position (pixel)';
-                [atomnumber,position] = o.processGaussFit();
-                ydata  = position(2,:);
+                [atomnumber,position,width] = o.processGaussFit();
+                ydata  = position(:,1);
+                
+            elseif strcmp(o.compositor.analysismethod,'Position Y')
+                
+                o.ylab = 'Position (pixel)';
+                [atomnumber,position,width] = o.processGaussFit();
+                ydata  = position(:,2);
                 
                 
             elseif strcmp(o.compositor.analysismethod,'Mask 1+2 BZ')
                 o.ylab = 'Population 1.BZ/(2.BZ)';
                 o.maskname = '1. BZ';
                 o.createMask();
-                 for i = 1: size(o.compositor.imagepackagecropped,1)
-                image = squeeze(o.compositor.imagepackagecropped(i,:,:));
-                image = image.*o.mask;
-                atomnumber1(i) = sum(sum(image));
-                 end
-                 
-                 %o.maskname = '1. BZ';
-                 o.maskname = '2. BZ';
-                 o.createMask();
-               for i = 1: size(o.compositor.imagepackagecropped,1)
-                image = squeeze(o.compositor.imagepackagecropped(i,:,:));
-                image = image.*(o.mask);
-                atomnumber2(i) = sum(sum(image));
-               end
-                 
-               ydata = atomnumber1./(atomnumber2);
-               
+                for i = 1: size(o.compositor.imagepackagecropped,1)
+                    image = squeeze(o.compositor.imagepackagecropped(i,:,:));
+                    image = image.*o.mask;
+                    atomnumber1(i) = sum(sum(image));
+                end
+                
+                %o.maskname = '1. BZ';
+                o.maskname = '2. BZ';
+                o.createMask();
+                for i = 1: size(o.compositor.imagepackagecropped,1)
+                    image = squeeze(o.compositor.imagepackagecropped(i,:,:));
+                    image = image.*(o.mask);
+                    atomnumber2(i) = sum(sum(image));
+                end
+                
+                ydata = atomnumber1./(atomnumber2);
+                
             elseif strcmp(o.compositor.analysismethod,'Momentum resolved')
                 o.ylab = 'Density (a.u.)';
                 atomnumber = squeeze(o.compositor.imagepackagecropped(:,round(o.compositor.currentCoordinate(2)),round(o.compositor.currentCoordinate(1))));
@@ -127,20 +127,20 @@ classdef AnalysisFigure < BaseFigure
                 o.maskname = '2x BZ';
                 o.createBigMask(364-o.compositor.roi(1),155-o.compositor.roi(2));
                 for i = 1: size(o.compositor.imagepackagecropped,1)
-                image = squeeze(o.compositor.imagepackagecropped(i,:,:));
-                image = image.*o.mask;
-                atomnumber1(i) = sum(sum(image));
+                    image = squeeze(o.compositor.imagepackagecropped(i,:,:));
+                    image = image.*o.mask;
+                    atomnumber1(i) = sum(sum(image));
                 end
-                 
-                 o.maskname = '2x BZ';
-                 o.createBigMask(360-o.compositor.roi(1),375-o.compositor.roi(2));
-               for i = 1: size(o.compositor.imagepackagecropped,1)
-                image = squeeze(o.compositor.imagepackagecropped(i,:,:));
-                image = image.*o.mask;
-                atomnumber2(i) = sum(sum(image));
-               end
-               ydata = atomnumber1./(atomnumber1+atomnumber2);
-               
+                
+                o.maskname = '2x BZ';
+                o.createBigMask(360-o.compositor.roi(1),375-o.compositor.roi(2));
+                for i = 1: size(o.compositor.imagepackagecropped,1)
+                    image = squeeze(o.compositor.imagepackagecropped(i,:,:));
+                    image = image.*o.mask;
+                    atomnumber2(i) = sum(sum(image));
+                end
+                ydata = atomnumber1./(atomnumber1+atomnumber2);
+                
             elseif strcmp(o.compositor.analysismethod,'Width X')
                 o.ylab = 'Width X  ';
                 [atomnumber,position,width] = o.processGaussFit();
@@ -150,30 +150,30 @@ classdef AnalysisFigure < BaseFigure
                 [atomnumber,position,width] = o.processGaussFit();
                 ydata = width(:,2);
             end
-                o.onChangeParameter();
-                o.ydata = ydata;
-                o.ydata2 = ydata2;
-                o.compositor.ydataanalysis = [];
-                %o.compositor.xdataanalysis = [];
-                o.compositor.ydataanalysis = o.ydata;
-
-                %o.compositor.xdataanalysis = o.compositor.analysisxdata;
-                
-                o.onReplot();
-                
-                
+            o.onChangeParameter();
+            o.ydata = ydata;
+            o.ydata2 = ydata2;
+            o.compositor.ydataanalysis = [];
+            %o.compositor.xdataanalysis = [];
+            o.compositor.ydataanalysis = o.ydata;
+            
+            %o.compositor.xdataanalysis = o.compositor.analysisxdata;
+            
+            o.onReplot();
+            
+            
         end
         
         function onChangeParameter(o)
             o.compositor.xdataanalysis= [];
-             if strcmp(o.compositor.analysisstring,'ID')
+            if strcmp(o.compositor.analysisstring,'ID')
                 o.compositor.analysis_xlab = 'ID';
                 o.compositor.xdataanalysis = o.compositor.selectedIDsReal;
-
+                
             elseif strcmp(o.compositor.analysisstring,'Duration')
                 indexduration = o.compositor.indexslotduration;
                 for i = 1: numel(o.compositor.selectedIDs)
-                o.compositor.xdataanalysis(i) = o.compositor.protocolpackage{1,i}.p.slotDuration(indexduration);
+                    o.compositor.xdataanalysis(i) = o.compositor.protocolpackage{1,i}.p.slotDuration(indexduration);
                 end
                 o.compositor.analysis_xlab = o.compositor.protocolpackage{1,1}.p.timeSlotNames(indexduration);
                 
@@ -182,7 +182,7 @@ classdef AnalysisFigure < BaseFigure
                 indexduration = o.compositor.indexslotduration;
                 indexanalog = o.compositor.indexanalog;
                 for i = 1: numel(o.compositor.selectedIDs)
-                o.compositor.xdataanalysis(i) = o.compositor.protocolpackage{1,i}.p.analogVals(indexduration,indexanalog);
+                    o.compositor.xdataanalysis(i) = o.compositor.protocolpackage{1,i}.p.analogVals(indexduration,indexanalog);
                 end
                 o.compositor.analysis_xlab = o.compositor.protocolpackage{1,1}.p.analogNames(indexanalog);
                 
@@ -200,25 +200,25 @@ classdef AnalysisFigure < BaseFigure
                 %o.visavaluedouble = [];
                 for i = 1: numel(o.compositor.selectedIDs)
                     if o.compositor.visacommandnumber2 == 1
-                    visavalue = regexpi(o.compositor.protocolpackage{1,i}.p.visaText{o.compositor.indexvisa},[o.compositor.visacommand '\s+(?<os1>[-?\d\.]+)'], 'tokens');
+                        visavalue = regexpi(o.compositor.protocolpackage{1,i}.p.visaText{o.compositor.indexvisa},[o.compositor.visacommand '\s+(?<os1>[-?\d\.]+)'], 'tokens');
                     elseif o.compositor.visacommandnumber2 == 2
-                       visavalue = regexpi(o.compositor.protocolpackage{1,i}.p.visaText{o.compositor.indexvisa},[o.compositor.visacommand '\s+[-?\d\.]+\s+(?<os1>[-?\d\.]+)'], 'tokens'); 
+                        visavalue = regexpi(o.compositor.protocolpackage{1,i}.p.visaText{o.compositor.indexvisa},[o.compositor.visacommand '\s+[-?\d\.]+\s+(?<os1>[-?\d\.]+)'], 'tokens');
                     elseif o.compositor.visacommandnumber2 == 3
-                       visavalue = regexpi(o.compositor.protocolpackage{1,i}.p.visaText{o.compositor.indexvisa},[o.compositor.visacommand '\s+[-?\d\.]+\s+[-?\d\.]+\s+(?<os1>[-?\d\.]+)'], 'tokens');  
+                        visavalue = regexpi(o.compositor.protocolpackage{1,i}.p.visaText{o.compositor.indexvisa},[o.compositor.visacommand '\s+[-?\d\.]+\s+[-?\d\.]+\s+(?<os1>[-?\d\.]+)'], 'tokens');
                     elseif o.compositor.visacommandnumber2 == 4
-                        visavalue = regexpi(o.compositor.protocolpackage{1,i}.p.visaText{o.compositor.indexvisa},[o.compositor.visacommand '\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+(?<os1>[-?\d\.]+)'], 'tokens'); 
-                     elseif o.compositor.visacommandnumber2 == 5
-                        visavalue = regexpi(o.compositor.protocolpackage{1,i}.p.visaText{o.compositor.indexvisa},[o.compositor.visacommand '\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+(?<os1>[-?\d\.]+)'], 'tokens'); 
-                     elseif o.compositor.visacommandnumber2 == 6
-                        visavalue = regexpi(o.compositor.protocolpackage{1,i}.p.visaText{o.compositor.indexvisa},[o.compositor.visacommand '\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+(?<os1>[-?\d\.]+)'], 'tokens'); 
-                     elseif o.compositor.visacommandnumber2 == 7
-                        visavalue = regexpi(o.compositor.protocolpackage{1,i}.p.visaText{o.compositor.indexvisa},[o.compositor.visacommand '\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+(?<os1>[-?\d\.]+)'], 'tokens'); 
-                     elseif o.compositor.visacommandnumber2 == 8
-                        visavalue = regexpi(o.compositor.protocolpackage{1,i}.p.visaText{o.compositor.indexvisa},[o.compositor.visacommand '\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+(?<os1>[-?\d\.]+)'], 'tokens'); 
+                        visavalue = regexpi(o.compositor.protocolpackage{1,i}.p.visaText{o.compositor.indexvisa},[o.compositor.visacommand '\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+(?<os1>[-?\d\.]+)'], 'tokens');
+                    elseif o.compositor.visacommandnumber2 == 5
+                        visavalue = regexpi(o.compositor.protocolpackage{1,i}.p.visaText{o.compositor.indexvisa},[o.compositor.visacommand '\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+(?<os1>[-?\d\.]+)'], 'tokens');
+                    elseif o.compositor.visacommandnumber2 == 6
+                        visavalue = regexpi(o.compositor.protocolpackage{1,i}.p.visaText{o.compositor.indexvisa},[o.compositor.visacommand '\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+(?<os1>[-?\d\.]+)'], 'tokens');
+                    elseif o.compositor.visacommandnumber2 == 7
+                        visavalue = regexpi(o.compositor.protocolpackage{1,i}.p.visaText{o.compositor.indexvisa},[o.compositor.visacommand '\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+(?<os1>[-?\d\.]+)'], 'tokens');
+                    elseif o.compositor.visacommandnumber2 == 8
+                        visavalue = regexpi(o.compositor.protocolpackage{1,i}.p.visaText{o.compositor.indexvisa},[o.compositor.visacommand '\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+(?<os1>[-?\d\.]+)'], 'tokens');
                     elseif o.compositor.visacommandnumber2 == 9
-                        visavalue = regexpi(o.compositor.protocolpackage{1,i}.p.visaText{o.compositor.indexvisa},[o.compositor.visacommand '\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+(?<os1>[-?\d\.]+)'], 'tokens'); 
+                        visavalue = regexpi(o.compositor.protocolpackage{1,i}.p.visaText{o.compositor.indexvisa},[o.compositor.visacommand '\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+(?<os1>[-?\d\.]+)'], 'tokens');
                     elseif o.compositor.visacommandnumber2 == 10
-                        visavalue = regexpi(o.compositor.protocolpackage{1,i}.p.visaText{o.compositor.indexvisa},[o.compositor.visacommand '\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+(?<os1>[-?\d\.]+)'], 'tokens'); 
+                        visavalue = regexpi(o.compositor.protocolpackage{1,i}.p.visaText{o.compositor.indexvisa},[o.compositor.visacommand '\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+(?<os1>[-?\d\.]+)'], 'tokens');
                     elseif o.compositor.visacommandnumber2 == 11
                         visavalue = regexpi(o.compositor.protocolpackage{1,i}.p.visaText{o.compositor.indexvisa},[o.compositor.visacommand '\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+(?<os1>[-?\d\.]+)'], 'tokens');
                     elseif o.compositor.visacommandnumber2 == 12
@@ -226,18 +226,18 @@ classdef AnalysisFigure < BaseFigure
                     elseif o.compositor.visacommandnumber2 == 13
                         visavalue = regexpi(o.compositor.protocolpackage{1,i}.p.visaText{o.compositor.indexvisa},[o.compositor.visacommand '\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+[-?\d\.]+\s+(?<os1>[-?\d\.]+)'], 'tokens');
                     end
-                        warning('off','MATLAB:callback:error');
+                    warning('off','MATLAB:callback:error');
                     
-                        visavaluedouble = str2double(visavalue{o.compositor.visacommandnumber});
-                        o.compositor.xdataanalysis(i) = visavaluedouble;
-
+                    visavaluedouble = str2double(visavalue{o.compositor.visacommandnumber});
+                    o.compositor.xdataanalysis(i) = visavaluedouble;
+                    
                 end
-             end
-             
-             
+            end
+            
+            
         end
         
-        function [atomnumbermean, position] = processGaussFit(o)
+        function [atomnumbermean, position, width] = processGaussFit(o)
             
             options = optimset('Display','off');
             atomnumber = zeros(size(o.compositor.imagepackagecropped,1));
@@ -271,7 +271,8 @@ classdef AnalysisFigure < BaseFigure
                 a(2)= fitydata2(2).*sqrt(2*pi).*fitydata2(4);
                 atomnumber(i) = mean(a);
                 %position(i,:,:) = [fitydata(3);fitydata2(3)];
-                position(:,i) = [fitydata(3); fitydata2(3)];
+                position(i,:,:) = [fitydata(3) fitydata2(3)];
+                width(i,:,:) = [fitydata(4) fitydata2(4)];
             end
             atomnumbermean = atomnumber;
             %                 position(i,:,:) = [fitydata(3);fitydata2(3)];
@@ -280,38 +281,38 @@ classdef AnalysisFigure < BaseFigure
         
         
         
-            function processData(o)
-                o.plotydata = [];
-                o.plotydata2 = [];
-                o.plotxdata = [];
-                Cneu = [];
-                Cneu2 = [];
-                A = [];
-                if o.compositor.average
-                    [A,ia,ib] =unique(o.compositor.xdataanalysis,'stable');
+        function processData(o)
+            o.plotydata = [];
+            o.plotydata2 = [];
+            o.plotxdata = [];
+            Cneu = [];
+            Cneu2 = [];
+            A = [];
+            if o.compositor.average
+                [A,ia,ib] =unique(o.compositor.xdataanalysis,'stable');
+                
+                for i=1:numel(ia)
+                    match = ib==i;
+                    % careful here xxx
+                    sel = o.ydata(match);
+                    Cneu(i) = mean(sel);
                     
-                    for i=1:numel(ia)
-                        match = ib==i;
-                        % careful here xxx
-                        sel = o.ydata(match);
-                        Cneu(i) = mean(sel);
-                        
-                        if ~isempty(o.ydata2)
-                            sel2 = o.ydata2(match);
-                            Cneu2(i) = mean(sel2);
-                        end
+                    if ~isempty(o.ydata2)
+                        sel2 = o.ydata2(match);
+                        Cneu2(i) = mean(sel2);
                     end
-                    
-                    o.plotydata = Cneu;
-                    o.plotydata2 = Cneu2;
-                    o.plotxdata = A;
-                else
-                    o.plotydata = o.ydata;
-                        o.plotydata2 = o.ydata2;
-                        o.plotxdata = o.compositor.xdataanalysis;
                 end
                 
+                o.plotydata = Cneu;
+                o.plotydata2 = Cneu2;
+                o.plotxdata = A;
+            else
+                o.plotydata = o.ydata;
+                o.plotydata2 = o.ydata2;
+                o.plotxdata = o.compositor.xdataanalysis;
             end
+            
+        end
         
         function onUpdateAnalysisFitResults(o,hsource,data)
             
@@ -323,37 +324,37 @@ classdef AnalysisFigure < BaseFigure
             dimx = size(o.compositor.imagepackagecropped,3);
             dimy = size(o.compositor.imagepackagecropped,2);
             if strcmp(o.maskname,'1. BZ')
-            BW=uZoneMask(1,dimy,dimx,o.roicenter(2),o.roicenter(1),LVL,1);
-            elseif strcmp(o.maskname,'2. BZ')               
-            BW=uZoneMask(2,dimy,dimx,o.roicenter(2),o.roicenter(1),LVL,1);
-            elseif strcmp(o.maskname,'3. BZ') 
-            BW=uZoneMask(3,dimy,dimx,o.roicenter(2),o.roicenter(1),LVL,1);
-            elseif strcmp(o.maskname,'2x BZ') 
-            BW=uZoneMask(1,dimy,dimx,o.roicenter(2),o.roicenter(1),2*LVL,1);
-            elseif strcmp(o.maskname,'1.+2. BZ') 
-                 BW1=uZoneMask(1,dimy,dimx,o.roicenter(2),o.roicenter(1),LVL,1);
-                 BW2=uZoneMask(2,dimy,dimx,o.roicenter(2),o.roicenter(1),LVL,1);
-                 BW = BW1 + BW2;
+                BW=uZoneMask(1,dimy,dimx,o.roicenter(2),o.roicenter(1),LVL,1);
+            elseif strcmp(o.maskname,'2. BZ')
+                BW=uZoneMask(2,dimy,dimx,o.roicenter(2),o.roicenter(1),LVL,1);
+            elseif strcmp(o.maskname,'3. BZ')
+                BW=uZoneMask(3,dimy,dimx,o.roicenter(2),o.roicenter(1),LVL,1);
+            elseif strcmp(o.maskname,'2x BZ')
+                BW=uZoneMask(1,dimy,dimx,o.roicenter(2),o.roicenter(1),2*LVL,1);
+            elseif strcmp(o.maskname,'1.+2. BZ')
+                BW1=uZoneMask(1,dimy,dimx,o.roicenter(2),o.roicenter(1),LVL,1);
+                BW2=uZoneMask(2,dimy,dimx,o.roicenter(2),o.roicenter(1),LVL,1);
+                BW = BW1 + BW2;
             end
             o.mask = BW;
         end
         
-         function createBigMask(o,centerx,centery)
+        function createBigMask(o,centerx,centery)
             LVL = 56;
             dimx = size(o.compositor.imagepackagecropped,3);
             dimy = size(o.compositor.imagepackagecropped,2);
             if strcmp(o.maskname,'1. BZ')
-            BW=uZoneMask(1,dimy,dimx,o.roicenter(2),o.roicenter(1),LVL,1);
-            elseif strcmp(o.maskname,'2. BZ')               
-            BW=uZoneMask(2,dimy,dimx,o.roicenter(2),o.roicenter(1),LVL,1);
-            elseif strcmp(o.maskname,'3. BZ') 
-            BW=uZoneMask(3,dimy,dimx,o.roicenter(2),o.roicenter(1),LVL,1);
-            elseif strcmp(o.maskname,'2x BZ') 
-            BW=uZoneMask(1,dimy,dimx,centery,centerx,2*LVL,1);
-            elseif strcmp(o.maskname,'1.+2. BZ') 
-                 BW1=uZoneMask(1,dimy,dimx,o.roicenter(2),o.roicenter(1),LVL,1);
-                 BW2=uZoneMask(2,dimy,dimx,o.roicenter(2),o.roicenter(1),LVL,1);
-                 BW = BW1 + BW2;
+                BW=uZoneMask(1,dimy,dimx,o.roicenter(2),o.roicenter(1),LVL,1);
+            elseif strcmp(o.maskname,'2. BZ')
+                BW=uZoneMask(2,dimy,dimx,o.roicenter(2),o.roicenter(1),LVL,1);
+            elseif strcmp(o.maskname,'3. BZ')
+                BW=uZoneMask(3,dimy,dimx,o.roicenter(2),o.roicenter(1),LVL,1);
+            elseif strcmp(o.maskname,'2x BZ')
+                BW=uZoneMask(1,dimy,dimx,centery,centerx,2*LVL,1);
+            elseif strcmp(o.maskname,'1.+2. BZ')
+                BW1=uZoneMask(1,dimy,dimx,o.roicenter(2),o.roicenter(1),LVL,1);
+                BW2=uZoneMask(2,dimy,dimx,o.roicenter(2),o.roicenter(1),LVL,1);
+                BW = BW1 + BW2;
             end
             o.mask = BW;
         end
@@ -379,15 +380,15 @@ classdef AnalysisFigure < BaseFigure
             %printdlg(o.figure);
         end
         
-%         function onUpdateAnalysis(o,hsource,data)
-%             o.onChangeParameter();
-%             %o.onReplot();
-%         end
+        %         function onUpdateAnalysis(o,hsource,data)
+        %             o.onChangeParameter();
+        %             %o.onReplot();
+        %         end
         
         % implementing BaseFigure
         function onCreate(o)
             
-
+            
             %addlistener(o.compositor, 'clearPlot', @o.onClearPlot);
             addlistener(o.compositor, 'updateAnalysis', @o.onUpdateAnalysisFigure);
             addlistener(o.compositor, 'updateAnalysisFigure', @o.onUpdateAnalysisFigure);
@@ -402,9 +403,9 @@ classdef AnalysisFigure < BaseFigure
                 'Units', 'normalized',...
                 'Position', [0.7 0.0 0.25 0.05],...
                 'Callback', @o.onSaveDataBtnPush);
-
-       
-                        
+            
+            
+            
         end
         
         function onReplot(o)
