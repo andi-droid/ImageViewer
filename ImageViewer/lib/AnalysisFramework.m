@@ -35,7 +35,7 @@ classdef AnalysisFramework
                 Vergr   = 2.02;
                 C_F = 4*2800/2200*0.76; 
                 TE = 0.9;
-                t_Bel = 50e-6;
+                t_Bel = 10e-6;
                 QE = 0.93;
                 CountToInt = (Vergr./PixSize).^2 * C_F * E_Photon / (QE * TE * t_Bel); % [W/(count*m�)]
            

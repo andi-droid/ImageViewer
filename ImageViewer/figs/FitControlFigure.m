@@ -178,7 +178,7 @@ classdef FitControlFigure < BaseFigure
                 
                 options = optimset('Display','off');
                 %
-                o.ydata = o.compositor.ydataanalysis; %'
+                o.ydata = o.compositor.ydataanalysis'; %'
                 o.xdata = o.compositor.xdataanalysis;
                 %
                 
