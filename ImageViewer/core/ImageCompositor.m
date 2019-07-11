@@ -14,7 +14,7 @@ classdef ImageCompositor < BaseFrame
         fitbuttonstate = true
         plotfitstate = false
         fitormean = true
-        species = 'K'
+        species = 'Li6' %Default Species is Li6
         analysismethod = 'Atomnumber'
         average = 1
         selectedIDs = []
@@ -141,8 +141,7 @@ classdef ImageCompositor < BaseFrame
             for iFigure=1:numel(o.figures)
                 o.figures{iFigure}.create(o);
             end
-            
-            
+                     
         end        
     end
     
