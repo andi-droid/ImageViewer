@@ -53,7 +53,7 @@ classdef FilePickerFigure < BaseFigure
     methods
         % constructor
         function o = FilePickerFigure()
-            
+            o.windowTitle = mfilename('class');
         end
         
         % callbacks
@@ -63,17 +63,17 @@ classdef FilePickerFigure < BaseFigure
                 o.compositor.plotfitdatax = [];
                 o.compositor.plotfitdatay = [];
                 o.compositor.currentabsorptionimage = o.filenamesabs{o.indeximage(source.Value)};
-%                 if strcmp(o.compositor.currentabsorptionimage(12),'3')
-%                     camerabefore = o.compositor.cameraID;
-%                     o.compositor.cameraID = '3';
-%                 else
-%                     camerabefore = o.compositor.cameraID;
-%                     o.compositor.cameraID = '0';
-%                 end
-%                 o.compositor.camerachange = ~(strcmp(camerabefore,o.compositor.cameraID));
-%                 if o.compositor.camerachange
-%                     o.compositor.camera = Camera(o.compositor.cameraID,o.compositor.species);
-%                 end
+                %                 if strcmp(o.compositor.currentabsorptionimage(12),'3')
+                %                     camerabefore = o.compositor.cameraID;
+                %                     o.compositor.cameraID = '3';
+                %                 else
+                %                     camerabefore = o.compositor.cameraID;
+                %                     o.compositor.cameraID = '0';
+                %                 end
+                %                 o.compositor.camerachange = ~(strcmp(camerabefore,o.compositor.cameraID));
+                %                 if o.compositor.camerachange
+                %                     o.compositor.camera = Camera(o.compositor.cameraID,o.compositor.species);
+                %                 end
                 
                 camerabefore = o.compositor.cameraID;
                 o.compositor.cameraID = o.compositor.currentabsorptionimage(12);
@@ -177,8 +177,8 @@ classdef FilePickerFigure < BaseFigure
                 datestringreduced = datestring(end-9:end);
                 path = sprintf(o.compositor.camera.protocolfile, datestring, datestringreduced, o.compositor.currentabsorptionimage(14:17));
                 %path = [o.compositor.camera.protocolpath datestring '/' datestringreduced '_' o.compositor.currentabsorptionimage(14:17) '_t_proto.dat'];
-                %path = [o.compositor.camera.protocolpath datestring '\Protocol-' datestringreduced '_' o.compositor.currentabsorptionimage(14:17) '.xml' ]; % Lithium string 
-                %disp(path); 
+                %path = [o.compositor.camera.protocolpath datestring '\Protocol-' datestringreduced '_' o.compositor.currentabsorptionimage(14:17) '.xml' ]; % Lithium string
+                %disp(path);
                 o.compositor.currentprotocol = path;
                 
                 switchroi = false;
@@ -226,11 +226,11 @@ classdef FilePickerFigure < BaseFigure
                 o.selectedIDs = o.listbox.String(range);
                 
                 
-                set(o.seldata1, 'String',str2double(o.selectedIDs{1})); 
-                set(o.seldata2, 'String',str2double(o.selectedIDs{end})); 
-                 
-                set(o.seldatadefringe1, 'String',str2double(o.selectedIDs{1})); 
-                set(o.seldatadefringe2, 'String',str2double(o.selectedIDs{end})); 
+                set(o.seldata1, 'String',str2double(o.selectedIDs{1}));
+                set(o.seldata2, 'String',str2double(o.selectedIDs{end}));
+                
+                set(o.seldatadefringe1, 'String',str2double(o.selectedIDs{1}));
+                set(o.seldatadefringe2, 'String',str2double(o.selectedIDs{end}));
                 
             end
             
@@ -246,7 +246,11 @@ classdef FilePickerFigure < BaseFigure
                 QE = o.compositor.camera.QE;
                 CountToInt = o.compositor.camera.CountToInt;
                 
-                res  = reallog(max(0.001,r./max(0.001,a))) + (r-a).*CountToInt/ISat;
+                % SORRY BUT WE DONT UNDERSTAND THE CORRECTION TERM!!!
+                % THANKS FOR DOCUMENTATION :P
+                %res  = reallog(max(0.001,r./max(0.001,a))) + (r-a).*CountToInt/ISat;
+                
+                res  = reallog(max(0.001,r./max(0.001,a)));
             end
         end
         
@@ -287,12 +291,12 @@ classdef FilePickerFigure < BaseFigure
                     o.compositor.imageDirectory = tempimagedirectory;
                     errordlg('Directory contains no images. Try again')
                 else
-                o.compositor.imageDirectory = tempimagedirectory;
-                o.updateParameters();
-                last = numel(o.listbox.String)
-                o.listbox.Value = last;
-                o.onSelectionChange(o.listbox);
-                errordlg('Error selecting directory. Try again')
+                    o.compositor.imageDirectory = tempimagedirectory;
+                    o.updateParameters();
+                    last = numel(o.listbox.String)
+                    o.listbox.Value = last;
+                    o.onSelectionChange(o.listbox);
+                    errordlg('Error selecting directory. Try again')
                 end
             end
         end
@@ -371,7 +375,7 @@ classdef FilePickerFigure < BaseFigure
                 o.listbox.Max = 5000;
                 dirLength = length(dir(o.compositor.imageDirectory));
                 if o.checkboxdefringed.Value == 1
-                     a = dir([o.compositor.imageDirectory '/*_def.tif']); % This is not completely fail save 
+                    a = dir([o.compositor.imageDirectory '/*_def.tif']); % This is not completely fail save
                 else
                     a = dir([o.compositor.imageDirectory '/*_atoms.tif']);
                 end
@@ -380,9 +384,9 @@ classdef FilePickerFigure < BaseFigure
             else
                 C = get(0, 'DefaultUIControlBackgroundColor');
                 set(hsource, 'BackgroundColor', C);
-                o.listbox.Value = str2double(o.seldata1.String); 
-                o.seldata2.String = o.seldata1.String; 
-                o.seldatadefringe2.String = o.seldatadefringe1.String; 
+                o.listbox.Value = str2double(o.seldata1.String);
+                o.seldata2.String = o.seldata1.String;
+                o.seldatadefringe2.String = o.seldatadefringe1.String;
                 o.listbox.Max = 1;
                 o.pushanalysis.Visible = 'off';
                 o.seldata1.Visible = 'off';
@@ -412,9 +416,9 @@ classdef FilePickerFigure < BaseFigure
             else
                 C = get(0, 'DefaultUIControlBackgroundColor');
                 set(hsource, 'BackgroundColor', C);
-                o.listbox.Value = str2double(o.seldatadefringe1.String); 
-                o.seldata2.String = o.seldata1.String; 
-                o.seldatadefringe2.String = o.seldatadefringe1.String; 
+                o.listbox.Value = str2double(o.seldatadefringe1.String);
+                o.seldata2.String = o.seldata1.String;
+                o.seldatadefringe2.String = o.seldatadefringe1.String;
                 o.listbox.Max = 1;
                 o.pushdefringe.Visible = 'off';
                 o.seldatadefringe1.Visible = 'off';
@@ -431,20 +435,20 @@ classdef FilePickerFigure < BaseFigure
             %
             %             set(o.seldata1, 'String',o.selectedIDs{1});
             %             set(o.seldata2, 'String',o.selectedIDs{end});
-%             o.selectedIDs = [];
-%             o.compositor.imagepackagecropped = [];
-%             o.compositor.imagepackage = [];
-%             o.compositor.protocolpackage = [];
-%             start = str2double(o.seldata1.String);
-%             stop = str2double(o.seldata2.String);
-%             range = [];
-%             range(1:numel(o.filenames)) = 0;
-%             range(start:stop) = 1;
-%             range = logical(range);
-%             o.selectedIDs = o.listbox.String(range);
-%             IDrange = start:stop;
-%             o.compositor.selectedIDs = IDrange;
-%             o.readoutData(range);
+            %             o.selectedIDs = [];
+            %             o.compositor.imagepackagecropped = [];
+            %             o.compositor.imagepackage = [];
+            %             o.compositor.protocolpackage = [];
+            %             start = str2double(o.seldata1.String);
+            %             stop = str2double(o.seldata2.String);
+            %             range = [];
+            %             range(1:numel(o.filenames)) = 0;
+            %             range(start:stop) = 1;
+            %             range = logical(range);
+            %             o.selectedIDs = o.listbox.String(range);
+            %             IDrange = start:stop;
+            %             o.compositor.selectedIDs = IDrange;
+            %             o.readoutData(range);
             %new implementation
             o.selectedIDs = [];
             o.compositor.imagepackagecropped = [];
@@ -485,11 +489,11 @@ classdef FilePickerFigure < BaseFigure
             month = [year today(1:7) '/'];
             day = [month today];
             try
-            o.compositor.imageDirectory = day;
-            o.updateParameters();
-            last = numel(o.listbox.String);
-            o.listbox.Value = last;
-            o.onSelectionChange(o.listbox);
+                o.compositor.imageDirectory = day;
+                o.updateParameters();
+                last = numel(o.listbox.String);
+                o.listbox.Value = last;
+                o.onSelectionChange(o.listbox);
             catch ME
                 if strcmp(ME.identifier,'MATLAB:badsubscript')
                     errordlg('Directory contains no images. Try again')
@@ -517,13 +521,13 @@ classdef FilePickerFigure < BaseFigure
                     o.listbox.Value = last;
                     o.onSelectionChange(o.listbox);
                 catch ME
-                if strcmp(ME.identifier,'MATLAB:badsubscript')
-                    errordlg('Directory contains no images. Try again')
-                else
-                    o.onTodayBtnPush();
-                    errordlg('This is the latest folder.');
-                end
-                   
+                    if strcmp(ME.identifier,'MATLAB:badsubscript')
+                        errordlg('Directory contains no images. Try again')
+                    else
+                        o.onTodayBtnPush();
+                        errordlg('This is the latest folder.');
+                    end
+                    
                 end
             else
                 errordlg('First deactivate Contiuous Mode.');
@@ -543,10 +547,10 @@ classdef FilePickerFigure < BaseFigure
                 o.compositor.imageDirectory(end-17:end-11) = o.daydownstr(1:7);
                 o.compositor.imageDirectory(end-22:end-19) = o.daydownstr(1:4);
                 try
-                o.updateParameters();
-                last = numel(o.listbox.String);
-                o.listbox.Value = last;
-                o.onSelectionChange(o.listbox);
+                    o.updateParameters();
+                    last = numel(o.listbox.String);
+                    o.listbox.Value = last;
+                    o.onSelectionChange(o.listbox);
                 catch ME
                     if strcmp(ME.identifier,'MATLAB:badsubscript')
                         errordlg('Directory contains no images. Try again')
@@ -577,7 +581,7 @@ classdef FilePickerFigure < BaseFigure
             month = [year today(1:7) '/'];
             day = [month today];
             if o.checkboxdefringed.Value == 1
-                 a = dir([o.compositor.imageDirectory '/*_def.tif']); % Needs to be in the configuration 
+                a = dir([o.compositor.imageDirectory '/*_def.tif']); % Needs to be in the configuration
             else
                 a = dir([o.compositor.imageDirectory '/*_atoms.tif']);
             end
@@ -657,72 +661,72 @@ classdef FilePickerFigure < BaseFigure
             h = uiwaitbar(position);
             for i = 1:numel(o.selectedIDs)
                 name = selectedfilenamesabs{i};
-                                if exist([o.compositor.camera.protocolpath datestring '/mat/' datestringreduced '_' name(14:17) '_t_proto.mat'], 'file') % Needs to be in the configuration 
-                protocol = load([o.compositor.camera.protocolpath datestring '/mat/' datestringreduced '_' name(14:17) '_t_proto.mat']); % Needs to be in the configuration 
-                pathabs = fullfile([o.compositor.imageDirectory '/' selectedfilenamesabs{i}]);
-                pathref = fullfile([o.compositor.imageDirectory '/' selectedfilenamesref{i}]);
-                error = true;
-                while(error)
-                    if o.checkboxdefringed.Value == 1
-                        pathdef = fullfile([o.compositor.imageDirectory '/' selectedfilenamesdef{i}]);
-                        def = double(imread(pathdef));
-                        abs = double(imread(pathabs));
-                        testref = def(100:400,:);
-                        rowsumtestref = sum(testref,2);
-                        indexvector = find(rowsumtestref ==0);
-                        testabs = abs(100:400,:);
-                        rowsumtestabs = sum(testabs,2);
-                        indexvector2 = find(rowsumtestabs ==0);
-                        if (isempty(indexvector) & isempty(indexvector2))%sometimes there are ref images which seem to be loaded incompletely
-                            error = false;
+                if exist([o.compositor.camera.protocolpath datestring '/mat/' datestringreduced '_' name(14:17) '_t_proto.mat'], 'file') % Needs to be in the configuration
+                    protocol = load([o.compositor.camera.protocolpath datestring '/mat/' datestringreduced '_' name(14:17) '_t_proto.mat']); % Needs to be in the configuration
+                    pathabs = fullfile([o.compositor.imageDirectory '/' selectedfilenamesabs{i}]);
+                    pathref = fullfile([o.compositor.imageDirectory '/' selectedfilenamesref{i}]);
+                    error = true;
+                    while(error)
+                        if o.checkboxdefringed.Value == 1
+                            pathdef = fullfile([o.compositor.imageDirectory '/' selectedfilenamesdef{i}]);
+                            def = double(imread(pathdef));
+                            abs = double(imread(pathabs));
+                            testref = def(100:400,:);
+                            rowsumtestref = sum(testref,2);
+                            indexvector = find(rowsumtestref ==0);
+                            testabs = abs(100:400,:);
+                            rowsumtestabs = sum(testabs,2);
+                            indexvector2 = find(rowsumtestabs ==0);
+                            if (isempty(indexvector) & isempty(indexvector2))%sometimes there are ref images which seem to be loaded incompletely
+                                error = false;
+                            else
+                                error = true;
+                            end
+                            image = od(def,abs);
                         else
-                            error = true;
-                        end
-                        image = od(def,abs);
-                    else
-                        abs = double(imread(pathabs));
-                        ref = double(imread(pathref));
-                        testref = ref(100:400,:);
-                        rowsumtestref = sum(testref,2);
-                        indexvector = find(rowsumtestref ==0);
-                        testabs = abs(100:400,:);
-                        rowsumtestabs = sum(testabs,2);
-                        indexvector2 = find(rowsumtestabs ==0);
-                        if (isempty(indexvector) & isempty(indexvector2)) %sometimes there are ref images which seem to be loaded incompletely
-                            error = false;
-                        else
-                            error = true;
-                        end
-                        %                        image = od(ref,abs);
-                        if o.exposurecorrection
-                            atomsroi = o.compositor.camera.defringeatoms;
-                            roi = o.compositor.camera.defringeroi;
-                            mask = false(size(abs));
-                            mask(atomsroi(2):(atomsroi(2)+atomsroi(4)-1),atomsroi(1):(atomsroi(1)+atomsroi(3)-1)) = true;
-                            atomsMask = mask;
-                            clear('mask');
-                            mask = false(size(abs));
-                            mask(roi(2):(roi(2)+roi(4)-1),roi(1):(roi(1)+roi(3)-1)) = true;
-                            mask = mask &...
-                                ~atomsMask;
-                            
-                            exposureAtoms = sum(sum(abs.*mask));
-                            exposureReferences = sum(sum(ref.*mask));
-                            correction = exposureAtoms/exposureReferences;
-                            ref = ref *correction;
-                            image = od(ref,abs);
-                        else
-                            image = od(ref,abs);
+                            abs = double(imread(pathabs));
+                            ref = double(imread(pathref));
+                            testref = ref(100:400,:);
+                            rowsumtestref = sum(testref,2);
+                            indexvector = find(rowsumtestref ==0);
+                            testabs = abs(100:400,:);
+                            rowsumtestabs = sum(testabs,2);
+                            indexvector2 = find(rowsumtestabs ==0);
+                            if (isempty(indexvector) & isempty(indexvector2)) %sometimes there are ref images which seem to be loaded incompletely
+                                error = false;
+                            else
+                                error = true;
+                            end
+                            %                        image = od(ref,abs);
+                            if o.exposurecorrection
+                                atomsroi = o.compositor.camera.defringeatoms;
+                                roi = o.compositor.camera.defringeroi;
+                                mask = false(size(abs));
+                                mask(atomsroi(2):(atomsroi(2)+atomsroi(4)-1),atomsroi(1):(atomsroi(1)+atomsroi(3)-1)) = true;
+                                atomsMask = mask;
+                                clear('mask');
+                                mask = false(size(abs));
+                                mask(roi(2):(roi(2)+roi(4)-1),roi(1):(roi(1)+roi(3)-1)) = true;
+                                mask = mask &...
+                                    ~atomsMask;
+                                
+                                exposureAtoms = sum(sum(abs.*mask));
+                                exposureReferences = sum(sum(ref.*mask));
+                                correction = exposureAtoms/exposureReferences;
+                                ref = ref *correction;
+                                image = od(ref,abs);
+                            else
+                                image = od(ref,abs);
+                            end
                         end
                     end
-                end
-                croppedimage = image(o.compositor.roi(2):(o.compositor.roi(4)+o.compositor.roi(2)),o.compositor.roi(1):(o.compositor.roi(3)+o.compositor.roi(1)));
-                %o.compositor.imagepackage(i,:,:) = image;
-                o.compositor.imagepackagecropped(i,:,:) = croppedimage;
-                o.compositor.protocolpackage{i} = protocol;
-                status = i/numel(o.selectedIDs);
-                uiwaitbar(h,status);
-                drawnow
+                    croppedimage = image(o.compositor.roi(2):(o.compositor.roi(4)+o.compositor.roi(2)),o.compositor.roi(1):(o.compositor.roi(3)+o.compositor.roi(1)));
+                    %o.compositor.imagepackage(i,:,:) = image;
+                    o.compositor.imagepackagecropped(i,:,:) = croppedimage;
+                    o.compositor.protocolpackage{i} = protocol;
+                    status = i/numel(o.selectedIDs);
+                    uiwaitbar(h,status);
+                    drawnow
                 end
             end
             

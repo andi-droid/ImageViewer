@@ -293,7 +293,7 @@ classdef InformationFigure < BaseFigure
                 o.text{2} = ['Camera: ' o.compositor.cameraID];
                 o.text{3} = ['ID: ' o.compositor.currentabsorptionimage(14:17)];
                 o.text{4} = ['Experimental cycle time: ' num2str(round(o.compositor.telapsed)) 's'];
-                o.text{5} = ['Atomnumber: ' num2str(round(mean(atomnumber)))];
+                o.text{5} = ['Atomnumber: ' num2str(o.compositor.atomnumberfitmean)];
                 o.text{6} = ['Atomnumber(Fit): ' num2str(round(nanmean(atomnumberfit)))];
                 o.text{7} = ['Width x(px): ' num2str(round(sigmax))];
                 o.text{8} = ['Width y(px): ' num2str(round(sigmay))];
