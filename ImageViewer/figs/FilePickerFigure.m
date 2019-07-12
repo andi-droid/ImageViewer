@@ -245,12 +245,24 @@ classdef FilePickerFigure < BaseFigure
                 t_Bel = o.compositor.camera.t_Bel;
                 QE = o.compositor.camera.QE;
                 CountToInt = o.compositor.camera.CountToInt;
+                Detuning = o.compositor.camera.Detuning;
+                Gamma = o.compositor.camera.Gamma;
                 
+                                
                 % SORRY BUT WE DONT UNDERSTAND THE CORRECTION TERM!!!
                 % THANKS FOR DOCUMENTATION :P
                 %res  = reallog(max(0.001,r./max(0.001,a))) + (r-a).*CountToInt/ISat;
                 
-                res  = reallog(max(0.001,r./max(0.001,a)));
+                
+                % THE NEW CORRECTION TERM IS DOCUMENTED IN
+                % OneNote-ImageViewer
+                    
+                    res  = reallog(max(0.001,r./max(0.001,a))).*(1+...
+                        CountToInt.*r./ISat./(1+ 4.*(Detuning.^2/Gamma.^2))); 
+                    
+                % OD WITHOUT INTENSITY CORRECTION
+                
+                    %res  = reallog(max(0.001,r./max(0.001,a)));
             end
         end
         
