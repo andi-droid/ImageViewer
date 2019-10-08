@@ -143,10 +143,10 @@ classdef InformationFigure < BaseFigure
                 o.compositor.fitdatay=gfity2;
                 o.compositor.plotfitdatax = o.fitFct(o.fitydata,sort(o.xdata));
                 o.compositor.plotfitdatay = o.fitFct(o.fitydata2,sort(o.xdata2));
-%                 a(1)= o.compositor.fitdatax(2).*sqrt(2*pi).*o.compositor.fitdatax(4);
-%                 a(2)= o.compositor.fitdatay(2).*sqrt(2*pi).*o.compositor.fitdatay(4);
-%                 o.compositor.atomnumberfitmean = mean(a);
-				notify(o.compositor, 'updateFitResults');
+                %                 a(1)= o.compositor.fitdatax(2).*sqrt(2*pi).*o.compositor.fitdatax(4);
+                %                 a(2)= o.compositor.fitdatay(2).*sqrt(2*pi).*o.compositor.fitdatay(4);
+                %                 o.compositor.atomnumberfitmean = mean(a);
+                notify(o.compositor, 'updateFitResults');
             end
             
             if strcmp(o.fitFctName,'2D BEC')
@@ -275,10 +275,10 @@ classdef InformationFigure < BaseFigure
                 atomnumberfit(2) = o.compositor.fitdatay(2).*o.compositor.fitdatay(4)*sqrt(2*pi).*o.compositor.camera.Atomfaktor;
                 o.compositor.atomsx = atomnumberfit(1);
                 o.compositor.atomsy = atomnumberfit(2);
-				o.compositor.atomnumberfitmean = round(nanmean(atomnumberfit));
+                o.compositor.atomnumberfitmean = round(nanmean(atomnumberfit));
                 sigmax = o.compositor.fitdatax(4);
                 sigmay = o.compositor.fitdatay(4);
-				centerx = o.compositor.fitdatax(3);
+                centerx = o.compositor.fitdatax(3);
                 centery = o.compositor.fitdatay(3);
             else
                 atomnumberfit = [];
@@ -287,22 +287,33 @@ classdef InformationFigure < BaseFigure
                 centerx = [];
                 centery = [];
             end
-                                  
+            
             if ~isempty(o.compositor.currentabsorptionimage)
-                o.text{1} = ['Date: ' o.compositor.currentabsorptionimage(1:4) '/' o.compositor.currentabsorptionimage(6:7) '/' o.compositor.currentabsorptionimage(9:10)];
-                o.text{2} = ['Camera: ' o.compositor.cameraID];
-                o.text{3} = ['ID: ' o.compositor.currentabsorptionimage(14:17)];
-                o.text{4} = ['Experimental cycle time: ' num2str(round(o.compositor.telapsed)) 's'];
-                o.text{5} = ['Atomnumber: ' num2str(o.compositor.atomnumberfitmean)];
-                o.text{6} = ['Atomnumber(Fit): ' num2str(round(nanmean(atomnumberfit)))];
-                o.text{7} = ['Width x(px): ' num2str(round(sigmax))];
-                o.text{8} = ['Width y(px): ' num2str(round(sigmay))];
-                o.text{9} = ['Center x(px): ' num2str(round(centerx))];
-                o.text{10} = ['Center y(px): ' num2str(round(centery))];
-                o.text{11} = ['Temperature (T/Tf): ' num2str(round(o.tempF,2))];
-                o.text{12} = ['Cond. Fraction: ' num2str(round(o.frac,2))];
-                o.text{13} = ['Atomnumber(FitX): ' num2str(round(atomnumberfit(1)))];
-                o.text{14} = ['Atomnumber(FitY): ' num2str(round(atomnumberfit(2)))];
+                
+                if o.compositor.fluoq == 1
+                    o.text = [];
+                    o.text{1} = ['Date: ' o.compositor.currentabsorptionimage(1:4) '/' o.compositor.currentabsorptionimage(6:7) '/' o.compositor.currentabsorptionimage(9:10)];
+                    o.text{2} = ['Camera: ' o.compositor.cameraID];
+                    o.text{3} = ['ID: ' o.compositor.currentabsorptionimage(14:17)];
+                    o.text{4} = ['Experimental cycle time: ' num2str(round(o.compositor.telapsed)) 's'];
+                    o.text{5} = ['Integrated Counts: ' num2str((o.compositor.intcounts),'%.4g')];
+                    o.text{6} = ['Fit Counts: ' num2str(round(nanmean(atomnumberfit)./o.compositor.camera.Atomfaktor),'%.4g')];
+                else
+                    o.text{1} = ['Date: ' o.compositor.currentabsorptionimage(1:4) '/' o.compositor.currentabsorptionimage(6:7) '/' o.compositor.currentabsorptionimage(9:10)];
+                    o.text{2} = ['Camera: ' o.compositor.cameraID];
+                    o.text{3} = ['ID: ' o.compositor.currentabsorptionimage(14:17)];
+                    o.text{4} = ['Experimental cycle time: ' num2str(round(o.compositor.telapsed)) 's'];
+                    o.text{5} = ['Center x(px): ' num2str(round(centerx))];
+                    o.text{6} = ['Center y(px): ' num2str(round(centery))];
+                    o.text{7} = ['Width x(px): ' num2str(round(sigmax))];
+                    o.text{8} = ['Width y(px): ' num2str(round(sigmay))];
+                    o.text{9} = ['Integrated Atomnumber: ' num2str(round(nanmean(atomnumber)),'%.4g')];
+                    o.text{10} = ['Atomnumber(Fit): ' num2str(round(nanmean(atomnumberfit)),'%.4g')];
+                    o.text{11} = ['Atomnumber(FitX): ' num2str(round(atomnumberfit(1)),'%.4g')];
+                    o.text{12} = ['Atomnumber(FitY): ' num2str(round(atomnumberfit(2)),'%.4g')];
+                    o.text{13} = ['Temperature (T/Tf): ' num2str(round(o.tempF,2))];
+                    o.text{14} = ['Cond. Fraction: ' num2str(round(o.frac,2))];
+                end
             end
         end
         
@@ -316,7 +327,7 @@ classdef InformationFigure < BaseFigure
             addlistener(o.compositor, 'updateData', @o.onUpdateDataEvent);
             addlistener(o.compositor, 'updateFitResults', @o.onUpdateFitResults);
             addlistener(o.compositor, 'doFit', @o.onDoFit);
-            o.layout  = uicontrol('style','text', 'Parent', o.figure,'Units', 'normalized', 'Position', [0. 0. 1 1]);
+            o.layout  = uicontrol('style','text', 'Parent', o.figure,'Units', 'normalized', 'Position', [0.3 -.05 1 1],'HorizontalAlignment', 'left');
             o.axes.Visible = 'off';
             set(o.layout,'String','Info');
             

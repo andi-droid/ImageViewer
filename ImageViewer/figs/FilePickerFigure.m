@@ -7,6 +7,7 @@ classdef FilePickerFigure < BaseFigure
         showlastbtn
         checkboxdefringed
         checkboxexposure
+        checkboxfluo
         currentfolder
         protocolbtn
         togglerunning
@@ -97,10 +98,10 @@ classdef FilePickerFigure < BaseFigure
                         o.compositor.referenceimage = imread(pathref);
                         ref = double(o.compositor.referenceimage);
                         abs = double(o.compositor.absorptionimage);
-                        testref = ref(100:400,:);
+                        testref = ref(1:50,:);
                         rowsumtestref = sum(testref,2);
                         indexvector = find(rowsumtestref ==0);
-                        testabs = abs(100:400,:);
+                        testabs = abs(1:50,:);
                         rowsumtestabs = sum(testabs,2);
                         indexvector2 = find(rowsumtestabs ==0);
                         if (isempty(indexvector) & isempty(indexvector2)) %sometimes there are ref images which seem to be loaded incompletely
@@ -118,57 +119,64 @@ classdef FilePickerFigure < BaseFigure
                 o.compositor.refmaxcounts = max(max((ref)));
                 
                 
-                
-                if o.checkboxdefringed.Value == 1
-                    o.compositor.currentdefringedimage = regexprep(o.compositor.currentabsorptionimage,expression,replacedef);
-                    pathdef = fullfile([o.compositor.imageDirectory '/' o.compositor.currentdefringedimage]);
-                    
-                    error = true;
-                    countvariable = 0;
-                    while error
-                        try
-                            o.compositor.defringedimage = imread(pathdef);
-                            error = false;
-                        catch
-                            if o.togglerunning.Value == 0
-                                o.compositor.defringedimage =imread(pathref);
-                                errordlg('Defringed image not found. Displaying non-defringed image instead...');
-                                error = false;
-                            else
-                                pause(2);
-                                countvariable = countvariable+1;
-                                if countvariable > 100
-                                    o.compositor.defringedimage =imread(pathref);
-                                    error = false;
-                                end
-                            end
-                            
-                        end
-                    end
-                    def = double(o.compositor.defringedimage);
-                    
-                    o.compositor.image = od(def,abs);
-                    
+                if o.compositor.fluoq == 1
+                    o.compositor.image = fl(ref,abs);
                 else
-                    if o.exposurecorrection
-                        atomsroi = o.compositor.camera.defringeatoms;
-                        roi = o.compositor.camera.defringeroi;
-                        mask = false(size(abs));
-                        mask(atomsroi(2):(atomsroi(2)+atomsroi(4)-1),atomsroi(1):(atomsroi(1)+atomsroi(3)-1)) = true;
-                        atomsMask = mask;
-                        clear('mask');
-                        mask = false(size(abs));
-                        mask(roi(2):(roi(2)+roi(4)-1),roi(1):(roi(1)+roi(3)-1)) = true;
-                        mask = mask &...
-                            ~atomsMask;
+                    if o.checkboxdefringed.Value == 1
+                        o.compositor.currentdefringedimage = regexprep(o.compositor.currentabsorptionimage,expression,replacedef);
+                        pathdef = fullfile([o.compositor.imageDirectory '/' o.compositor.currentdefringedimage]);
                         
-                        exposureAtoms = sum(sum(abs.*mask));
-                        exposureReferences = sum(sum(ref.*mask));
-                        correction = exposureAtoms/exposureReferences;
-                        ref = ref *correction;
-                        o.compositor.image = od(ref,abs);
+                        error = true;
+                        countvariable = 0;
+                        while error
+                            try
+                                o.compositor.defringedimage = imread(pathdef);
+                                error = false;
+                            catch
+                                if o.togglerunning.Value == 0
+                                    o.compositor.defringedimage =imread(pathref);
+                                    errordlg('Defringed image not found. Displaying non-defringed image instead...');
+                                    error = false;
+                                else
+                                    pause(2);
+                                    countvariable = countvariable+1;
+                                    if countvariable > 100
+                                        o.compositor.defringedimage =imread(pathref);
+                                        error = false;
+                                    end
+                                end
+                                
+                            end
+                        end
+                        def = double(o.compositor.defringedimage);
+                        
+                        o.compositor.image = od(def,abs);
+                        
                     else
-                        o.compositor.image = od(ref,abs);
+                        if o.exposurecorrection
+                            atomsroi = o.compositor.camera.defringeatoms;
+                            roi = o.compositor.camera.defringeroi;
+                            mask = false(size(abs));
+                            mask(atomsroi(2):(atomsroi(2)+atomsroi(4)-1),atomsroi(1):(atomsroi(1)+atomsroi(3)-1)) = true;
+                            atomsMask = mask;
+                            clear('mask');
+                            mask = false(size(abs));
+                            mask(roi(2):(roi(2)+roi(4)-1),roi(1):(roi(1)+roi(3)-1)) = true;
+                            mask = mask &...
+                                ~atomsMask;
+                            
+                            exposureAtoms = sum(sum(abs.*mask));
+                            exposureReferences = sum(sum(ref.*mask));
+                            correction = exposureAtoms/exposureReferences;
+                            if isnan(correction)
+                                correction = 1;
+                                errordlg('Exposure correction is invalid. Please recheck defringing of your camera.')
+                            end
+                            ref = ref *correction;
+                            o.compositor.image = od(ref,abs);
+                        else
+                            o.compositor.image = od(ref,abs);
+                        end
                     end
                 end
                 newsizeimage = size(o.compositor.image);
@@ -186,18 +194,19 @@ classdef FilePickerFigure < BaseFigure
                     o.compositor.croppedimage = o.compositor.image(o.compositor.roi(2):(o.compositor.roi(4)+o.compositor.roi(2)),o.compositor.roi(1):(o.compositor.roi(3)+o.compositor.roi(1)));
                 catch
                     switchroi = true;
-                    o.compositor.roi = [220    100   350   300];
+                    o.compositor.roi = o.compositor.camera.roi;
                     o.compositor.croppedimage = o.compositor.image(o.compositor.roi(2):(o.compositor.roi(4)+o.compositor.roi(2)),o.compositor.roi(1):(o.compositor.roi(3)+o.compositor.roi(1)));
                 end
                 o.compositor.datacroppedx = sum(o.compositor.croppedimage,1);
                 o.compositor.datacroppedy = sum(o.compositor.croppedimage,2);
+                o.compositor.intcounts = sum(sum(o.compositor.croppedimage));
                 croppedimagemaxcounts = max(max((o.compositor.croppedimage)));
                 croppedimagemincounts = min(min((o.compositor.croppedimage)));
                 o.compositor.croppedcontrast = croppedimagemaxcounts-croppedimagemincounts;
                 o.compositor.datax = sum(o.compositor.image,1);
                 o.compositor.datay = sum(o.compositor.image,2);
                 
-                o.compositor.cutOD = o.compositor.croppedimage(floor(o.compositor.roi(4)/2),:);
+                o.compositor.cutOD = o.compositor.croppedimage(max(1,floor(o.compositor.roi(4)/2)),:);
                 
                 
                 if o.compositor.fitbuttonstate
@@ -264,6 +273,12 @@ classdef FilePickerFigure < BaseFigure
                 
                     %res  = reallog(max(0.001,r./max(0.001,a)));
             end
+            
+            function res = fl(r,a)
+                
+                res  = a-r;
+                
+            end
         end
         
         function updateParameters(o)
@@ -289,8 +304,9 @@ classdef FilePickerFigure < BaseFigure
             formatdate = 'yyyy_mm_dd';
             today = datestr(now,formatdate);
             month = today(1:7);
+            year = today(1:4);
             tempimagedirectory = o.compositor.imageDirectory;
-            o.compositor.imageDirectory = uigetdir([o.compositor.camera.imageDirectoryNode '/' month '/']);
+            o.compositor.imageDirectory = uigetdir([o.compositor.camera.imageDirectoryNode '/' year '/' '/' month '/']);
             
             
             try
@@ -316,6 +332,25 @@ classdef FilePickerFigure < BaseFigure
         function onCheckboxdefringedUpdate(o,hsource,data)
             o.onSelectionChange(o.listbox);
         end
+        
+        function onCheckboxfluoUpdate(o,hsource,data)
+            if hsource.Value ==1
+                o.exposurecorrection = 0;
+                o.compositor.fluoq = 1;
+                set(o.checkboxexposure,'visible','off');
+                set(o.checkboxdefringed,'visible','off');
+                set(o.toggledefringe,'visible','off');
+                notify(o.compositor,'onChangeFluo');
+            else
+                o.compositor.fluoq = 0;
+                set(o.checkboxexposure,'visible','on');
+                set(o.checkboxdefringed,'visible','on');
+                set(o.toggledefringe,'visible','on');    
+                notify(o.compositor,'onChangeFluo');
+            end
+            o.onSelectionChange(o.listbox);
+        end
+        
         
         function onCheckboxExposureUpdate(o,hsource,data)
             if hsource.Value ==1
@@ -822,8 +857,15 @@ classdef FilePickerFigure < BaseFigure
             o.checkboxdefringed = uicontrol('Style','checkbox',...
                 'Units', 'normalized',...
                 'String',{'Show defringed'},...
-                'Position',[0.25 0.30 0.4 0.1],...
+                'Position',[0.7 0.3 0.4 0.1],...
                 'Callback', @o.onCheckboxdefringedUpdate);
+            
+            o.checkboxfluo = uicontrol('Style','checkbox',...
+                'Units', 'normalized',...
+                'String',{'FluoImage?'},...
+                'Value',o.compositor.fluoq,...
+                'Position',[0.25 0.30 0.4 0.1],...
+                'Callback', @o.onCheckboxfluoUpdate);
             
             o.checkboxexposure = uicontrol('Style','checkbox',...
                 'Units', 'normalized',...

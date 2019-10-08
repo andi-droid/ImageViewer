@@ -8,8 +8,6 @@ classdef HistoryFigure < BaseFigure
         radios
         
         % Data
-        IntCounts
-        FitCounts
         integratedOD
         integratedODx
         integratedODy
@@ -38,8 +36,6 @@ classdef HistoryFigure < BaseFigure
         
         
         function onClearPlot(o,hsource,data)
-            o.compositor.intcountshistory = [];
-            o.compositor.fitcountshistory = [];
             o.compositor.atomnumberhistory = [];
             o.compositor.widthhistoryx = [];
             o.compositor.widthhistoryy = [];
@@ -64,7 +60,6 @@ classdef HistoryFigure < BaseFigure
             o.onClearBtnPush(o.clearbtn);
             set(o.popupanalysis,'visible','on');
             set(o.popupanalysisfluo,'visible','off');
-            end
         end
         
         function onUseFitResults(o,hsource,data)
@@ -216,23 +211,6 @@ classdef HistoryFigure < BaseFigure
         function onReplot(o)
             o.processData();
            if o.compositor.fluoq
-               if o.popupanalysisfluo.Value == 1
-                o.plot = plot(o.axes,o.xaxisdata, o.IntCounts,'or');
-                grid(o.axes,'on');
-                xlabel(o.axes,o.compositor.history_xlab);
-                ylabel(o.axes,'IntCounts');
-                o.axes.YScale = 'lin';
-                %o.axes.YLim = [0,2e8];
-                %o.axes.YLim = [0,20e7];
-               else
-                o.plot = plot(o.axes,o.xaxisdata, o.FitCounts,'ob');
-                grid(o.axes,'on');
-                xlabel(o.axes,o.compositor.history_xlab);
-                ylabel(o.axes,'FitCounts');
-                o.axes.YScale = 'lin';
-                %o.axes.YLim = [45,200];
-                hold(o.axes,'off');
-               end
            else
             if o.popupanalysis.Value == 1
                 o.plot = plot(o.axes,o.xaxisdata, o.integratedOD,'ok');

@@ -9,6 +9,7 @@ classdef ImageCompositor < BaseFrame
         % Status
         camera
         cameraID
+        fluoq = false
         camerachange = false
         loadprotocol = false
         fitbuttonstate = true
@@ -54,7 +55,8 @@ classdef ImageCompositor < BaseFrame
         croppedcontrast = 0.1
         atomnumberfitmean        
         absmaxcounts
-        refmaxcounts        
+        refmaxcounts
+        intcounts
         imageDirectory
         roi
         abscenter
@@ -83,6 +85,10 @@ classdef ImageCompositor < BaseFrame
         ydataanalysis
         xdataanalysis
         atomnumberhistory
+        atomnumberhistoryx
+        atomnumberhistoryy
+        intcountshistory
+        fitcountshistory
         historyxdata
         oscillationx
         oscillationy
@@ -113,6 +119,7 @@ classdef ImageCompositor < BaseFrame
         updatePlotFit
         doFit
         useFitResults
+        onChangeFluo
         clearPlot
         updateAnalysisFitResults
         updateImagePackage

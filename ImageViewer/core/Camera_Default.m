@@ -13,6 +13,8 @@ classdef Camera_Default < handle
         ISat
         E_Photon
         PixSize
+        PixDepth
+        ColorScaling
         HotPix
         magnification
         C_F

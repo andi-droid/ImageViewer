@@ -256,8 +256,11 @@ classdef ImageBaseFigure < handle
                 varargin{:});
             
              a = ancestor(plot, 'axes');
-%             a.YDir = 'normal';
+             %a.YDir = 'normal';
             daspect(a, [1 1 1]);
+            colormap(othercolor('Blues9'))
+            colorbar(a);
+            
         end
     end
     

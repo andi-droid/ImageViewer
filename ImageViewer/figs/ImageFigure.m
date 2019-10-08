@@ -18,6 +18,8 @@
         avgstate = false
         avgNum = 10;
         avgNumedit;
+        cMax = 5;
+        cMaxedit;
 
         
     end
@@ -51,6 +53,11 @@
         
         function onEnteravgNum(o,hObject,callbackdata)
             o.avgNum = str2double(get(hObject,'string'));
+        end
+        
+        function onEntercMax(o,hObject,callbackdata)
+            o.cMax = str2double(get(hObject,'string'));
+            o.onReplot();
         end
         
         function processData(o)
@@ -133,18 +140,28 @@
             
             o.avgbtn = uicontrol(o.figure, 'Style', 'togglebutton', 'String', 'Avg',...
                 'Units', 'normalized',...
-                'Position', [0.9 0.9 0.1 0.1],...
+                'Position', [0 0.9 0.1 0.1],...
                 'Value', 0,...
                 'Callback', @o.onAvgPush);
             avgNumtext = uicontrol(o.figure, 'Style', 'text', 'String', 'AvgNum',...
                 'Units', 'normalized',...
-                'Position', [0.9 0.8 0.1 0.1]);
-            
+                'Position', [0 0.8 0.1 0.1]);
+                        
             o.avgNumedit = uicontrol(o.figure, 'Style', 'edit',...
                 'Units', 'normalized',...
                 'String',num2str(o.avgNum),...
-                'Position', [0.9 0.75 0.1 0.1],...
+                'Position', [0 0.75 0.1 0.1],...
                 'Callback', {@o.onEnteravgNum});
+
+            cMaxtext = uicontrol(o.figure, 'Style', 'text', 'String', 'cMax',...
+                'Units', 'normalized',...
+                'Position', [0 0.6 0.1 0.1]);
+                        
+            o.cMaxedit = uicontrol(o.figure, 'Style', 'edit',...
+                'Units', 'normalized',...
+                'String',num2str(o.cMax),...
+                'Position', [0 0.55 0.1 0.1],...
+                'Callback', {@o.onEntercMax});
             
             o.saverectbtn = uicontrol(o.figure, 'Style', 'pushbutton', 'String', 'Save Rect',...
                 'Units', 'normalized',...
@@ -159,19 +176,22 @@
                 'Callback', @o.onZoomPush);
             
             centernames ={'Center x', 'Center y'};
+          
+            for i =1:2
+                centertext(i) = uicontrol(o.figure, 'Style', 'text', 'String', centernames{i},...
+                    'Units', 'normalized',...
+                    'Position', [0.0 .15+.15*(i-1) 0.1 0.1]);
+            end
+            
             for i =1:2
                 o.centeredits(i) = uicontrol(o.figure, 'Style', 'edit',...
                     'Units', 'normalized',...
                     'String',num2str(o.compositor.abscenter(i)),...
-                    'Position', [0.1 1.0-0.1*i 0.1 0.1],...
+                    'Position', [0.0 0.1+.15*(i-1) 0.1 0.1],...
                     'Callback', {@o.onEnterCenter,i});
             end
             
-            for i =1:2
-                centertext(i) = uicontrol(o.figure, 'Style', 'text', 'String', centernames{i},...
-                    'Units', 'normalized',...
-                    'Position', [0.0 1.0-0.1*i 0.1 0.1]);
-            end
+
             
             
         end
@@ -190,9 +210,13 @@
                 o.axes.YLim = [1 o.sizeofimage(1)];
             end
             o.axes.Visible = 'off';
+            
+            
             colormap(o.axes,o.wjet);
-            o.clims = [0,5]; %old [-1,3.2] 2018-08-22
+            o.clims = [0,o.cMax]; %old [-1,3.2] 2018-08-22
             set(o.axes, 'CLim', o.clims);
+
+            
             daspect(o.axes, [1 1 1]);
             if ~isempty(o.image)
                 o.roiRect = imrect(o.axes, o.compositor.roi,...
@@ -216,8 +240,10 @@
         end
         
         function onRedraw(o)
+
             o.processData();
             o.plot.CData = o.image;
+            
 %             if isempty(o.roiRect)
 %                                 o.roiRect = imrect(o.axes, o.compositor.roi,...
 %                     'PositionConstraintFcn', makeConstrainToRectFcn('imrect',o.axes.XLim,o.axes.YLim));
