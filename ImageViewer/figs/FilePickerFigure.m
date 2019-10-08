@@ -306,7 +306,7 @@ classdef FilePickerFigure < BaseFigure
             month = today(1:7);
             year = today(1:4);
             tempimagedirectory = o.compositor.imageDirectory;
-            o.compositor.imageDirectory = uigetdir([o.compositor.camera.imageDirectoryNode '/' year '/' '/' month '/']);
+            o.compositor.imageDirectory = uigetdir([o.compositor.camera.imageDirectoryNode '/' year '/' month '/']);
             
             
             try

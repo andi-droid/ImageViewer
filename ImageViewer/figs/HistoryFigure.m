@@ -41,6 +41,8 @@ classdef HistoryFigure < BaseFigure
             o.compositor.intcountshistory = [];
             o.compositor.fitcountshistory = [];
             o.compositor.atomnumberhistory = [];
+            o.compositor.atomnumberhistoryx = [];
+            o.compositor.atomnumberhistoryy = [];
             o.compositor.widthhistoryx = [];
             o.compositor.widthhistoryy = [];
             o.compositor.oscillationx = [];
