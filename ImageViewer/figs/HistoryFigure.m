@@ -107,6 +107,7 @@ classdef HistoryFigure < BaseFigure
             
             o.onReplot();
         end
+
         
 %         function onTogglefitorcountUpdate(o,hsource,data)
 %             if o.togglefitorcount.Value == 1;
@@ -242,8 +243,8 @@ classdef HistoryFigure < BaseFigure
                 xlabel(o.axes,o.compositor.history_xlab);
                 ylabel(o.axes,'Atomnumber');
                 o.axes.YScale = 'lin';
-                %o.axes.YLim = [0,2e8];
-                %o.axes.YLim = [0,20e7];
+                o.axes.YLim = [0,5e4];
+                %o.axes.YLim = [0,25e7];
             elseif o.popupanalysis.Value == 2
                 o.plot = plot(o.axes,o.xaxisdata, o.integratedODx,'or');
                 grid(o.axes,'on');

@@ -58,23 +58,13 @@ classdef AnalysisFigure < BaseFigure
                 %             end
                 o.ylab = 'Atomnumber ';
                 [atomnumber,position,width] = o.processGaussFit();
-                %                 for i = 1: size(o.compositor.imagepackagecropped,1)
-                %                     image = squeeze(o.compositor.imagepackagecropped(i,:,:));
-                %                     atomnumber2(i) = sum(sum(image));
-                %                 end
+%                 for i = 1: size(o.compositor.imagepackagecropped,1)
+%                     image = squeeze(o.compositor.imagepackagecropped(i,:,:));
+%                     atomnumber2(i) = sum(sum(image));
+%                 end
                 %ydata = atomnumber.*o.compositor.camera.Atomfaktor;
                 ydata  = atomnumber(:,1)*o.compositor.camera.Atomfaktor;
                 ydata2 = atomnumber(:,2)*o.compositor.camera.Atomfaktor;
-            elseif strcmp(o.compositor.analysismethod,'AtomnumberX')
-                o.ylab = 'Atomnumber';
-                [atomnumber,position,width] = o.processGaussFit();
-                ydata  = atomnumber(:,1)*o.compositor.camera.Atomfaktor;
-            elseif strcmp(o.compositor.analysismethod,'AtomnumberY')
-                o.ylab = 'Atomnumber';
-                [atomnumber,position,width] = o.processGaussFit();
-                ydata  = atomnumber(:,2)*o.compositor.camera.Atomfaktor;
-                
-                
             elseif strcmp(o.compositor.analysismethod,'Position')
                 %                 for i = 1: size(o.compositor.imagepackagecropped,1)
                 %                 x = 1:size(o.compositor.imagepackagecropped,3);
@@ -250,7 +240,7 @@ classdef AnalysisFigure < BaseFigure
         function [atomnumber, position, width] = processGaussFit(o)
             
             options = optimset('Display','off');
-            %atomnumber = zeros(size(o.compositor.imagepackagecropped,1),1);
+            atomnumber = zeros(size(o.compositor.imagepackagecropped,1),1);
             for i = 1: size(o.compositor.imagepackagecropped,1)
                 
                 datacroppedx = sum(squeeze(o.compositor.imagepackagecropped(i,:,:)),1);
@@ -267,7 +257,7 @@ classdef AnalysisFigure < BaseFigure
                 
                 startparams = fit.startParams;
                 startparams2 = fit2.startParams;
-                
+                                              
                 [gfity,~] = lsqcurvefit(fit.fitFunction, startparams,xdata(1:end),ydata(1:end),[],[],options);
                 [gfity2,~] = lsqcurvefit(fit.fitFunction, startparams2,xdata2(1:end),ydata2(1:end),[],[],options);
                 fitydata = gfity;
@@ -276,11 +266,11 @@ classdef AnalysisFigure < BaseFigure
                 a(2)= fitydata2(2).*sqrt(2*pi).*fitydata2(4);
                 
                 
-                atomnumber(i,:,:) = [a(1) a(2)];
+                atomnumber(i,:,:) = [a(1) a(2)];   
                 position(i,:,:) = [fitydata(3) fitydata2(3)];
                 width(i,:,:) = [fitydata(4) fitydata2(4)];
             end
-            
+
             
         end
         
